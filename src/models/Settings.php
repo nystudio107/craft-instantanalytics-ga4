@@ -26,6 +26,18 @@ class Settings extends Model
     // =========================================================================
 
     /**
+     * The default Google Analytics measurement ID used by GA4.
+     * @var string
+     */
+    public string $googleAnalyticsMeasurementId = '';
+
+    /**
+     * The default Google Analytics measurement API secret used by GA4.
+     * @var string
+     */
+    public string $googleAnalyticsMeasurementApiSecret = '';
+
+    /**
      * The default Google Analytics tracking ID
      *
      * @var string

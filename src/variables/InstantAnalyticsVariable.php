@@ -11,6 +11,7 @@
 namespace nystudio107\instantanalytics\variables;
 
 use craft\helpers\Template;
+use nystudio107\instantanalytics\ga4\Analytics;
 use nystudio107\instantanalytics\helpers\IAnalytics;
 use nystudio107\instantanalytics\InstantAnalytics;
 use nystudio107\pluginvite\variables\ViteVariableInterface;
@@ -28,6 +29,11 @@ use yii\base\Exception;
 class InstantAnalyticsVariable implements ViteVariableInterface
 {
     use ViteVariableTrait;
+
+    /**
+     * @var Analytics
+     */
+    private $_ga4Analytics;
 
     // Public Methods
     // =========================================================================
@@ -58,6 +64,20 @@ class InstantAnalyticsVariable implements ViteVariableInterface
     public function eventAnalytics(string $eventCategory = '', string $eventAction = '', string $eventLabel = '', int $eventValue = 0): ?IAnalytics
     {
         return InstantAnalytics::$plugin->ia->eventAnalytics($eventCategory, $eventAction, $eventLabel, $eventValue);
+    }
+
+    /**
+     * Return the GA4 Analytics object
+     *
+     * @return Analytics
+     */
+    public function ga4(): Analytics
+    {
+        if (!$this->_ga4Analytics) {
+            $this->_ga4Analytics = new Analytics();
+        }
+
+        return $this->_ga4Analytics;
     }
 
     /**

@@ -440,7 +440,7 @@ class IA extends Component
                     ->setAsyncRequest(false);
 
                 // Try to parse a clientId from an existing _ga cookie
-                $clientId = $this->gaParseCookie();
+                $clientId = $this->getClientId();
                 if (!empty($clientId)) {
                     $analytics->setClientId($clientId);
                 }
@@ -524,12 +524,12 @@ class IA extends Component
     }
 
     /**
-     * gaParseCookie handles the parsing of the _ga cookie or setting it to a
+     * getClientId handles the parsing of the _ga cookie or setting it to a
      * unique identifier
      *
      * @return string the cid
      */
-    private function gaParseCookie(): string
+    public function getClientId(): string
     {
         $cid = '';
         if (isset($_COOKIE['_ga'])) {
