@@ -10,6 +10,8 @@
 
 namespace nystudio107\instantanalytics\variables;
 
+use craft\commerce\elements\Product;
+use craft\commerce\elements\Variant;
 use craft\helpers\Template;
 use nystudio107\instantanalytics\ga4\Analytics;
 use nystudio107\instantanalytics\helpers\IAnalytics;
@@ -73,11 +75,7 @@ class InstantAnalyticsVariable implements ViteVariableInterface
      */
     public function ga4(): Analytics
     {
-        if (!$this->_ga4Analytics) {
-            $this->_ga4Analytics = new Analytics();
-        }
-
-        return $this->_ga4Analytics;
+        return InstantAnalytics::$plugin->ga4->getAnalytics();
     }
 
     /**
@@ -88,6 +86,14 @@ class InstantAnalyticsVariable implements ViteVariableInterface
     public function analytics(): ?IAnalytics
     {
         return InstantAnalytics::$plugin->ia->analytics();
+    }
+
+    /**
+     * @param Product|Variant $productVariant the Product or Variant
+     */
+    public function addCommerceProductView($productVariant): void
+    {
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
     }
 
     /**

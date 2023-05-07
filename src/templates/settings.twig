@@ -23,15 +23,6 @@
 {% set commerceEnabled = (commerce and commerceEnabled and commerceInstalled) %}
 
 {{ forms.autosuggestField({
-    label: 'Google Analytics Tracking ID:',
-    instructions: "Enter your Google Analytics Tracking ID here. Only enter the ID, e.g.: UA-XXXXXX-XX, not the entire script code.",
-    suggestEnvVars: true,
-    id: 'googleAnalyticsTracking',
-    name: 'googleAnalyticsTracking',
-    value: settings['googleAnalyticsTracking'],
-}) }}
-
-{{ forms.autosuggestField({
     label: 'Google Analytics Measurement ID:',
     instructions: "Enter your Google Analytics Measurement ID here to be used by the GA4 API. Only enter the ID, e.g.: G-XXXXXXXXXX, not the entire script code.",
     suggestEnvVars: true,

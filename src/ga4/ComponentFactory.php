@@ -28,6 +28,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemListEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewSearchResultsEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\ItemParameter;
+use nystudio107\instantanalytics\ga4\events\PageViewEvent;
 
 /**
  * @author    nystudio107
@@ -41,6 +42,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\ItemParameter;
  * @method BaseEvent BaseEvent()
  * @method BeginCheckoutEvent BeginCheckoutEvent()
  * @method LoginEvent LoginEvent()
+ * @method PageViewEvent PageViewEvent()
  * @method PurchaseEvent PurchaseEvent()
  * @method RefundEvent RefundEvent()
  * @method RemoveFromCartEvent RemoveFromCartEvent()
@@ -64,6 +66,7 @@ class ComponentFactory
             'BaseEvent' => BaseEvent::class,
             'BeginCheckoutEvent' => BeginCheckoutEvent::class,
             'LoginEvent' => LoginEvent::class,
+            'PageViewEvent' => PageViewEvent::class,
             'PurchaseEvent' => PurchaseEvent::class,
             'RefundEvent' => RefundEvent::class,
             'RemoveFromCartEvent' => RemoveFromCartEvent::class,

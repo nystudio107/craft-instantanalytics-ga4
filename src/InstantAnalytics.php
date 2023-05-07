@@ -21,10 +21,12 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
+use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
+use nystudio107\instantanalytics\ga4\events\PageViewEvent;
 use nystudio107\instantanalytics\helpers\Field as FieldHelper;
 use nystudio107\instantanalytics\helpers\IAnalytics;
 use nystudio107\instantanalytics\models\Settings;
@@ -189,7 +191,7 @@ class InstantAnalytics extends Plugin
      */
     public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context): string
     {
-        $this->sendPageView();
+        $this->addPageViewEvent();
 
         return '';
     }
@@ -281,29 +283,39 @@ class InstantAnalytics extends Plugin
                 self::$currentTemplate = $event->template;
             }
         );
-        // Remember the name of the currently rendering template
+        // Send the page-view event.
         Event::on(
             View::class,
             View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
             function (TemplateEvent $event): void {
                 if (self::$settings->autoSendPageView) {
-                    $this->sendPageView();
+                    $this->addPageViewEvent();
                 }
             }
         );
+
+        // Send the collected events
+        Event::on(
+            Application::class,
+            Application::EVENT_AFTER_REQUEST,
+            function (Event $event): void {
+                $this->ga4->getAnalytics()->sendCollectedEvents();
+            }
+        );
+
         // Commerce-specific hooks
         if (self::$commercePlugin !== null) {
             Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, function (Event $e): void {
                 $order = $e->sender;
                 if (self::$settings->autoSendPurchaseComplete) {
-                    $this->commerce->orderComplete($order);
+                    $this->commerce->triggerOrderCompleteEvent($order);
                 }
             });
 
             Event::on(Order::class, Order::EVENT_AFTER_ADD_LINE_ITEM, function (LineItemEvent $e): void {
                 $lineItem = $e->lineItem;
                 if (self::$settings->autoSendAddToCart) {
-                    $this->commerce->addToCart($lineItem->order, $lineItem);
+                    $this->commerce->triggerAddToCartEvent($lineItem);
                 }
             });
 
@@ -312,7 +324,7 @@ class InstantAnalytics extends Plugin
                 Event::on(Order::class, Order::EVENT_AFTER_REMOVE_LINE_ITEM, function (LineItemEvent $e): void {
                     $lineItem = $e->lineItem;
                     if (self::$settings->autoSendRemoveFromCart) {
-                        $this->commerce->removeFromCart($lineItem->order, $lineItem);
+                        $this->commerce->triggerRemoveFromCartEvent($lineItem);
                     }
                 });
             }
@@ -355,56 +367,27 @@ class InstantAnalytics extends Plugin
     /**
      * Send a page view with the pre-loaded IAnalytics object
      */
-    private function sendPageView(): void
+    private function addPageViewEvent(): void
     {
         $request = Craft::$app->getRequest();
+
         if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest() && !self::$pageViewSent) {
             self::$pageViewSent = true;
-            $analytics = self::$plugin->ia->getGlobals(self::$currentTemplate);
-            // Bail if we have no analytics object
-            if ($analytics === null) {
-                return;
-            }
-            // If SEOmatic is installed, set the page title from it
-            $this->setTitleFromSeomatic($analytics);
-            // Send the page view
-            $response = $analytics->sendPageview();
+
+            $pageView = $this->ga4->getPageViewEvent(self::$currentTemplate);
+            $this->ga4->getAnalytics()->addEvent($pageView);
+
             Craft::info(
                 Craft::t(
                     'instant-analytics',
-                    'pageView sent, response:: {response}',
-                    [
-                        'response' => print_r($response, true),
-                    ]
-                ),
-                __METHOD__
-            );
-        } else {
-            Craft::error(
-                Craft::t(
-                    'instant-analytics',
-                    'Analytics not sent because googleAnalyticsTracking is not set'
+                    'pageView event queued for sending',
                 ),
                 __METHOD__
             );
         }
     }
 
-    /**
-     * If SEOmatic is installed, set the page title from it
-     */
-    private function setTitleFromSeomatic(IAnalytics $analytics): void
-    {
-        if (self::$seomaticPlugin && Seomatic::$settings->renderEnabled) {
-            $titleTag = Seomatic::$plugin->title->get('title');
-            if ($titleTag !== null) {
-                $titleArray = $titleTag->renderAttributes();
-                if (!empty($titleArray['title'])) {
-                    $analytics->setDocumentTitle($titleArray['title']);
-                }
-            }
-        }
-    }
+
 
     /**
      * @param $layoutId

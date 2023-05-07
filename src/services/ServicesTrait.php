@@ -22,6 +22,7 @@ use yii\base\InvalidConfigException;
  * @since     4.0.0
  *
  * @property IAService $ia
+ * @property Ga4 $ga4
  * @property CommerceService $commerce
  * @property VitePluginService $vite
  */
@@ -37,7 +38,7 @@ trait ServicesTrait
     {
         return [
             'components' => [
-                'ia' => IAService::class,
+                'ga4' => Ga4::class,
                 'commerce' => CommerceService::class,
                 // Register the vite service
                 'vite' => [
