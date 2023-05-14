@@ -57,7 +57,7 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
             if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
                 // Return our Analytics object as a Twig global
                 $globals = [
-                    'instantAnalytics' => InstantAnalytics::$plugin->ia->getGlobals(InstantAnalytics::$currentTemplate),
+                    'instantAnalytics' => InstantAnalytics::$plugin->ga4->getAnalytics(),
                 ];
             }
         }

@@ -26,9 +26,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
-use nystudio107\instantanalytics\ga4\events\PageViewEvent;
 use nystudio107\instantanalytics\helpers\Field as FieldHelper;
-use nystudio107\instantanalytics\helpers\IAnalytics;
 use nystudio107\instantanalytics\models\Settings;
 use nystudio107\instantanalytics\services\ServicesTrait;
 use nystudio107\instantanalytics\twigextensions\InstantAnalyticsTwigExtension;
@@ -192,10 +190,16 @@ class InstantAnalytics extends Plugin
     public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context): string
     {
         $this->addPageViewEvent();
-
         return '';
     }
 
+    public function logAnalyticsEvent(string $message, array $variables = [], string $category = ''): void
+    {
+        Craft::info(
+            Craft::t('instant-analytics', $message, $variables),
+            $category
+        );
+    }
     // Protected Methods
     // =========================================================================
 
@@ -377,16 +381,13 @@ class InstantAnalytics extends Plugin
             $pageView = $this->ga4->getPageViewEvent(self::$currentTemplate);
             $this->ga4->getAnalytics()->addEvent($pageView);
 
-            Craft::info(
-                Craft::t(
-                    'instant-analytics',
-                    'pageView event queued for sending',
-                ),
+            $this->logAnalyticsEvent(
+                'pageView event queued for sending',
+                [],
                 __METHOD__
             );
         }
     }
-
 
 
     /**

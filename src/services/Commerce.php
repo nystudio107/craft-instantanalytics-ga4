@@ -47,11 +47,11 @@ class Commerce extends Component
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->PurchaseEvent();
             $this->addCommerceOrderToEvent($event, $order);
 
-            Craft::info(Craft::t(
-                'instant-analytics',
+            InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding order complete event for `Commerce` - `Purchase` - `{reference}` - `{price}`',
-                ['reference' => $order->reference, 'price' => $order->totalPrice]
-            ), __METHOD__);
+                ['reference' => $order->reference, 'price' => $order->totalPrice],
+                __METHOD__
+            );
 
             InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
         }
@@ -67,11 +67,11 @@ class Commerce extends Component
         $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->AddToCartEvent();
         $this->addProductDataFromLineItem($event, $lineItem);
 
-        Craft::info(Craft::t(
-            'instant-analytics',
+        InstantAnalytics::$plugin->logAnalyticsEvent(
             'Adding add to cart event for `Commerce` - `Add to Cart` - `{title}` - `{quantity}`',
-            ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty]
-        ), __METHOD__);
+            ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty],
+            __METHOD__
+        );
     }
 
     /**
@@ -84,11 +84,11 @@ class Commerce extends Component
         $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->RemoveFromCartEvent();
         $this->addProductDataFromLineItem($event, $lineItem);
 
-        Craft::info(Craft::t(
-            'instant-analytics',
+        InstantAnalytics::$plugin->logAnalyticsEvent(
             'Adding remove from cart for `Commerce` - `Remove to Cart` - `{title}` - `{quantity}`',
-            ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty]
-        ), __METHOD__);
+            ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty],
+            __METHOD__
+        );
     }
 
 
@@ -98,7 +98,7 @@ class Commerce extends Component
      * @param PurchaseEvent $event The PurchaseEvent
      * @param Order $order
      */
-    public function addCommerceOrderToEvent(PurchaseEvent $event, Order $order)
+    protected function addCommerceOrderToEvent(PurchaseEvent $event, Order $order)
     {
         // First, include the transaction data
         $event->setCurrency($order->getPaymentCurrency())
@@ -133,9 +133,9 @@ class Commerce extends Component
      * @return string the title of the product
      * @throws \yii\base\InvalidConfigException
      */
-    public function addProductDataFromLineItem(ItemBaseEvent $event, LineItem $lineItem, int $index = 0, string $listName = ''): string
+    protected function addProductDataFromLineItem(ItemBaseEvent $event, LineItem $lineItem, int $index = 0, string $listName = ''): string
     {
-        $eventItem = new ItemParameter();
+        $eventItem = $this->getNewItemParameter();
 
         $product = null;
         $purchasable = $lineItem->purchasable;
@@ -195,7 +195,6 @@ class Commerce extends Component
             }
         }
 
-
         //Add each product to the hit to be sent
         $event->addItem($eventItem);
 
@@ -213,11 +212,32 @@ class Commerce extends Component
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
             $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
-            Craft::info(Craft::t(
-                'instant-analytics',
+            InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
-                ['sku' => $productVariant->sku, 'name' => $productVariant->getName(), 'index' => $index]
-            ), __METHOD__);
+                ['sku' => $productVariant->sku, 'name' => $productVariant->getName(), 'index' => $index],
+                __METHOD__
+            );
+        }
+    }
+
+    /**
+     * Add a product list impression from a Craft Commerce Product or Variant list
+     *
+     * @param Product[]|Variant[] $products
+     * @param string $listName
+     */
+    public function addCommerceProductListImpression(array $products, string $listName = 'default')
+    {
+        if (!empty($products)) {
+            $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemListEvent();
+            foreach ($products as $index => $productVariant) {
+                $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
+            }
+            InstantAnalytics::$plugin->logAnalyticsEvent(
+                'Adding view item list event. Listing {number} of items from the `{listName}` list.',
+                ['number' => count($products), 'listName' => $listName],
+                __METHOD__
+            );
         }
     }
 
@@ -228,12 +248,12 @@ class Commerce extends Component
      *
      * @throws \yii\base\InvalidConfigException
      */
-    public function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = 0, $listName = 'default'): void
+    protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = 0, $listName = 'default'): void
     {
-        $eventItem = new ItemParameter();
+        $eventItem = $this->getNewItemParameter();
 
         $isVariant = $productVariant instanceof Variant;
-        $variant =  $isVariant ? $productVariant : $productVariant->getDefaultVariant();
+        $variant = $isVariant ? $productVariant : $productVariant->getDefaultVariant();
 
         if (!$variant) {
             return;
@@ -309,7 +329,6 @@ class Commerce extends Component
             }
             switch (\get_class($srcField)) {
                 case MatrixBlockQuery::class:
-                    break;
                 case TagQuery::class:
                     break;
                 case CategoryQuery::class:
@@ -359,5 +378,17 @@ class Commerce extends Component
 
         // Join separate categories with a pipe.
         return implode('|', $cats);
+    }
+
+    /**
+     * Create an item parameter and set affiliation on it, if any exists.
+     *
+     * @return ItemParameter
+     */
+    protected function getNewItemParameter(): ItemParameter
+    {
+        $parameter = new ItemParameter();
+        $parameter->setAffiliation(InstantAnalytics::$plugin->ga4->getAnalytics()->getAffiliation());
+        return $parameter;
     }
 }

@@ -86,28 +86,6 @@ class IAnalytics extends Analytics
     }
 
     /**
-     * Add a product detail view to the Analytics object
-     *
-     * @param ?string $productVariant
-     */
-    public function addCommerceProductDetailView(?string $productVariant = null): void
-    {
-        if (InstantAnalytics::$commercePlugin) {
-            if ($productVariant) {
-                InstantAnalytics::$plugin->commerce->addCommerceProductDetailView($this, $productVariant);
-            }
-        } else {
-            Craft::warning(
-                Craft::t(
-                    'instant-analytics',
-                    'Craft Commerce is not installed'
-                ),
-                __METHOD__
-            );
-        }
-    }
-
-    /**
      * Add a checkout step to the Analytics object
      *
      * @param        $orderModel

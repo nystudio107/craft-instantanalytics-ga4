@@ -16,51 +16,59 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
 use Br33f\Ga4\MeasurementProtocol\Dto\Response\BaseResponse;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
+use craft\commerce\elements\Product;
+use craft\commerce\elements\Variant;
+use craft\errors\MissingComponentException;
 use craft\helpers\App;
 use nystudio107\instantanalytics\InstantAnalytics;
-use yii\helpers\StringHelper;
+use nystudio107\seomatic\Seomatic;
 
 /**
  * @author    nystudio107
  * @package   InstantAnalytics
  * @since     1.2.0
  *
- * @method setAllowGoogleSignals()
- * @method setAllowAdPersonalizationSignals()
- * @method setCampaignContent()
- * @method setCampaignId()
- * @method setCampaignMedium()
- * @method setCampaignName()
- * @method setCampaignSource()
- * @method setCampaignTerm()
- * @method setCampaign()
- * @method setClientId()
- * @method setContentGroup()
- * @method setCookieDomain()
- * @method setCookieExpires()
- * @method setCookieFlags()
- * @method setCookiePath()
- * @method setCookiePrefix()
- * @method setCookieUpdate()
- * @method setLanguage()
- * @method setPageLocation()
- * @method setPageReferrer()
- * @method setPageTitle()
- * @method setSendPageView()
- * @method setScreenResolution()
- * @method setUserId()
+ * @method Analytics setAllowGoogleSignals(string $value)
+ * @method Analytics setAllowAdPersonalizationSignals(string $value)
+ * @method Analytics setCampaignContent(string $value)
+ * @method Analytics setCampaignId(string $value)
+ * @method Analytics setCampaignMedium(string $value)
+ * @method Analytics setCampaignName(string $value)
+ * @method Analytics setCampaignSource(string $value)
+ * @method Analytics setCampaignTerm(string $value)
+ * @method Analytics setCampaign(string $value)
+ * @method Analytics setClientId(string $value)
+ * @method Analytics setContentGroup(string $value)
+ * @method Analytics setCookieDomain(string $value)
+ * @method Analytics setCookieExpires(string $value)
+ * @method Analytics setCookieFlags(string $value)
+ * @method Analytics setCookiePath(string $value)
+ * @method Analytics setCookiePrefix(string $value)
+ * @method Analytics setCookieUpdate(string $value)
+ * @method Analytics setLanguage(string $value)
+ * @method Analytics setPageLocation(string $value)
+ * @method Analytics setPageReferrer(string $value)
+ * @method Analytics setPageTitle(string $value)
+ * @method Analytics setSendPageView(string $value)
+ * @method Analytics setScreenResolution(string $value)
+ * @method Analytics setUserId(string $value)
  */
 class Analytics
 {
     /**
      * @var BaseRequest
      */
-    private $_request;
+    private BaseRequest $_request;
 
     /**
-     * @var Service
+     * @var Service|null|false
      */
-    private $_service;
+    private mixed $_service;
+
+    /**
+     * @var string|null
+     */
+    private ?string $_affiliation;
 
     /**
      * Component factory for creating events.
@@ -92,36 +100,70 @@ class Analytics
      */
     public function sendCollectedEvents(): ?BaseResponse
     {
+        $service = $this->service();
+
+        if (!$service) {
+            return null;
+        }
+
         $request = $this->request();
         $eventCount = count($request->getEvents()->getEventList());
+
+        if (!InstantAnalytics::$settings->sendAnalyticsData) {
+            InstantAnalytics::$plugin->logAnalyticsEvent(
+                'Analytics not enabled - skipped sending {count} events',
+                ['count' => $eventCount],
+                __METHOD__
+            );
+        }
+
         if ($eventCount === 0) {
-            Craft::info(
-                Craft::t(
-                    'instant-analytics',
-                    'No events collected to send',
-                ),
+            InstantAnalytics::$plugin->logAnalyticsEvent(
+                'No events collected to send',
+                [],
                 __METHOD__
             );
 
             return null;
         }
 
-        Craft::info(
-            Craft::t(
-                'instant-analytics',
-                'Sending {count} analytics events',
-                [
-                    'count' => $eventCount,
-                ]
-            ),
+        InstantAnalytics::$plugin->logAnalyticsEvent(
+            'Sending {count} analytics events',
+            ['count' => $eventCount],
             __METHOD__
         );
 
-        $response = $this->service()->send($request);
+        $response = $service->send($request);
 
         // Clear events already sent from the list.
         $request->getEvents()->setEventList([]);
+
         return $response;
+    }
+
+    /**
+     * Set affiliation for all the events that incorporate Commerce Product info for the remaining duration of request.
+     *
+     * @param string $affiliation
+     * @return $this
+     */
+    public function setAffiliation(string $affiliation): self
+    {
+        $this->_affiliation = $affiliation;
+        return $this;
+    }
+
+    public function getAffiliation(): ?string
+    {
+        return $this->_affiliation;
+    }
+
+    public function addCommerceProductImpression(Product|Variant $productVariant, $index, $listName) {
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+    }
+
+    public function addCommerceProductListImpression(array $products, $listName) {
+        InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 
     public function __call(string $methodName, array $arguments)
@@ -156,12 +198,18 @@ class Analytics
         if (str_starts_with($methodName, 'set')) {
             $methodName = substr($methodName, 3);
 
-            if (!empty($knownProperties[$methodName])) {
-                $this->service()->setAdditionalQueryParam($knownProperties[$methodName], $arguments[0]);
+            $service = $this->service();
+            if ($service && !empty($knownProperties[$methodName])) {
+                $service->setAdditionalQueryParam($knownProperties[$methodName], $arguments[0]);
+
+                return $this;
             }
 
         }
+
+        return null;
     }
+
     protected function request(): BaseRequest
     {
         if ($this->_request === null) {
@@ -171,18 +219,70 @@ class Analytics
         return $this->_request;
     }
 
-    protected function service(): Service
+    protected function service(): ?Service
     {
+        if ($this->_service === false) {
+            return null;
+        }
+
         if ($this->_service === null) {
             $settings = InstantAnalytics::$settings;
             $apiSecret = App::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
             $measurementId = App::parseEnv($settings->googleAnalyticsMeasurementId);
 
+            if (empty($apiSecret) || empty($measurementId)) {
+                InstantAnalytics::$plugin->logAnalyticsEvent(
+                    'API secret or measurement ID not set up for Instant Analytics',
+                    [],
+                    __METHOD__
+                );
+                $this->_service = false;
+
+                return null;
+            }
             $this->_service = new Service($apiSecret, $measurementId);
 
             $ga4Client = new HttpClient();
             $ga4Client->setClient(Craft::createGuzzleClient());
             $this->_service->setHttpClient($ga4Client);
+
+            $request = Craft::$app->getRequest();
+            try {
+                $session = Craft::$app->getSession();
+            } catch (MissingComponentException $exception) {
+                $session = null;
+            }
+
+            $this->setPageReferrer($request->getReferrer());
+
+            // Load any campaign values from session or request
+            $campaignParams = [
+                'utm_source' => 'CampaignSource',
+                'utm_medium' => 'CampaignMedium',
+                'utm_campaign' => 'CampaignName',
+                'utm_content' => 'CampaignContent',
+                'utm_term' => 'CampaignTerm',
+            ];
+
+            // Load them up for GA4
+            foreach ($campaignParams as $key => $method) {
+                $value = $request->getParam($key) ?? $session->get($key) ?? null;
+                $method = 'set' . $method;
+
+                $this->$method($value);
+
+                if ($session && $value) {
+                    $session->set($key, $value);
+                }
+
+            }
+
+            // If SEOmatic is installed, set the affiliation as well
+            if (InstantAnalytics::$seomaticPlugin && Seomatic::$settings->renderEnabled && Seomatic::$plugin->metaContainers->metaSiteVars !== null) {
+                $siteName = Seomatic::$plugin->metaContainers->metaSiteVars->siteName;
+                $this->setAffiliation($siteName);
+            }
+
         }
 
         return $this->_service;
