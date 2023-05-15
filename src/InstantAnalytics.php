@@ -308,17 +308,7 @@ class InstantAnalytics extends Plugin
                 $this->ga4->getAnalytics()->sendCollectedEvents();
             }
         );
-
-        // Send the collected events
-        Event::on(
-            Application::class,
-            Application::EVENT_AFTER_REQUEST,
-            function (Event $event): void {
-                Craft::error('TWO ' . microtime(true), 'debug');
-                $this->ga4->getAnalytics()->sendCollectedEvents();
-            }
-        );
-
+        
         // Commerce-specific hooks
         if (self::$commercePlugin !== null) {
             Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, function (Event $e): void {
