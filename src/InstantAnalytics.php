@@ -33,6 +33,7 @@ use nystudio107\instantanalytics\twigextensions\InstantAnalyticsTwigExtension;
 use nystudio107\instantanalytics\variables\InstantAnalyticsVariable;
 use nystudio107\seomatic\Seomatic;
 use yii\base\Event;
+use yii\web\Response;
 use function array_merge;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
@@ -212,7 +213,7 @@ class InstantAnalytics extends Plugin
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
         // Install our template hook
-        $view->hook('iaSendPageView', fn(array $context): string => $this->ga4->addPageViewEvent());
+        $view->hook('iaSendPageView', fn(array $context): string => (string)$this->ga4->addPageViewEvent());
 
         // Register our variables
         Event::on(
@@ -294,8 +295,17 @@ class InstantAnalytics extends Plugin
             View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
             function (TemplateEvent $event): void {
                 if (self::$settings->autoSendPageView) {
-                    $this->addPageViewEvent();
+                    $this->ga4->addPageViewEvent();
                 }
+            }
+        );
+
+        // Send the collected events
+        Event::on(
+            Response::class,
+            Response::EVENT_AFTER_SEND,
+            function (Event $event): void {
+                $this->ga4->getAnalytics()->sendCollectedEvents();
             }
         );
 
@@ -304,6 +314,7 @@ class InstantAnalytics extends Plugin
             Application::class,
             Application::EVENT_AFTER_REQUEST,
             function (Event $event): void {
+                Craft::error('TWO ' . microtime(true), 'debug');
                 $this->ga4->getAnalytics()->sendCollectedEvents();
             }
         );

@@ -207,7 +207,7 @@ class Commerce extends Component
      * @param Product|Variant $productVariant the Product or Variant
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression($productVariant, $index = 0, $listName = 'default')
+    public function addCommerceProductImpression(Variant|Product $productVariant, $index = 0, $listName = 'default')
     {
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
@@ -226,7 +226,7 @@ class Commerce extends Component
      * @param Product[]|Variant[] $products
      * @param string $listName
      */
-    public function addCommerceProductListImpression(array $products, string $listName = 'default')
+    public function addCommerceProductListImpression(array $products, string $listName = 'default'): void
     {
         if (!empty($products)) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemListEvent();

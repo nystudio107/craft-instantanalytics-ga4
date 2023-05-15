@@ -10,11 +10,13 @@
 
 namespace nystudio107\instantanalytics\variables;
 
+use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\helpers\Template;
 use nystudio107\instantanalytics\ga4\Analytics;
-use nystudio107\instantanalytics\helpers\IAnalytics;
+use nystudio107\instantanalytics\ga4\events\PageViewEvent;
+use nystudio107\instantanalytics\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalytics\InstantAnalytics;
 use nystudio107\pluginvite\variables\ViteVariableInterface;
 use nystudio107\pluginvite\variables\ViteVariableTrait;
@@ -32,40 +34,31 @@ class InstantAnalyticsVariable implements ViteVariableInterface
 {
     use ViteVariableTrait;
 
-    /**
-     * @var Analytics
-     */
-    private $_ga4Analytics;
-
     // Public Methods
     // =========================================================================
 
     /**
-     * Get a PageView analytics object
+     * Get a PageView Event
      *
      * @param string $url
      * @param string $title
      *
-     * @return null|IAnalytics
+     * @return PageViewEvent
      */
-    public function pageViewAnalytics(string $url = '', string $title = ''): ?IAnalytics
+    public function pageViewEvent(string $url = '', string $title = ''): PageViewEvent
     {
-        return InstantAnalytics::$plugin->ia->pageViewAnalytics($url, $title);
+        return InstantAnalytics::$plugin->ga4->getPageViewEvent($url, $title);
     }
 
     /**
-     * Get an Event analytics object
+     * Get a simple event
      *
-     * @param string $eventCategory
-     * @param string $eventAction
-     * @param string $eventLabel
-     * @param int $eventValue
-     *
-     * @return null|IAnalytics
+     * @param string $eventName
+     * @return BaseEvent
      */
-    public function eventAnalytics(string $eventCategory = '', string $eventAction = '', string $eventLabel = '', int $eventValue = 0): ?IAnalytics
+    public function simpleEvent(string $eventName = ''): BaseEvent
     {
-        return InstantAnalytics::$plugin->ia->eventAnalytics($eventCategory, $eventAction, $eventLabel, $eventValue);
+        return InstantAnalytics::$plugin->ga4->getSimpleEvent($eventName);
     }
 
     /**
@@ -76,16 +69,6 @@ class InstantAnalyticsVariable implements ViteVariableInterface
     public function ga4(): Analytics
     {
         return InstantAnalytics::$plugin->ga4->getAnalytics();
-    }
-
-    /**
-     * Return an Analytics object
-     *
-     * @return null|IAnalytics
-     */
-    public function analytics(): ?IAnalytics
-    {
-        return InstantAnalytics::$plugin->ia->analytics();
     }
 
     /**
@@ -107,35 +90,25 @@ class InstantAnalyticsVariable implements ViteVariableInterface
      */
     public function pageViewTrackingUrl($url, $title): Markup
     {
-        return Template::raw(InstantAnalytics::$plugin->ia->pageViewTrackingUrl($url, $title));
+        return Template::raw(AnalyticsHelper::getPageViewTrackingUrl($url, $title));
     }
 
     /**
      * Get an Event tracking URL
      *
      * @param string $url
-     * @param string $eventCategory
-     * @param string $eventAction
-     * @param string $eventLabel
-     * @param int $eventValue
-     *
+     * @param string $eventName
+     * @param array $params
      * @return Markup
      * @throws Exception
      */
     public function eventTrackingUrl(
         string $url,
-        string $eventCategory = '',
-        string $eventAction = '',
-        string $eventLabel = '',
-        int    $eventValue = 0
+        string $eventName = '',
+        array  $params = []
     ): Markup
     {
-        return Template::raw(InstantAnalytics::$plugin->ia->eventTrackingUrl(
-            $url,
-            $eventCategory,
-            $eventAction,
-            $eventLabel,
-            $eventValue
-        ));
+        return Template::raw(AnalyticsHelper::getEventTrackingUrl($url, $eventName, $params));
     }
+
 }

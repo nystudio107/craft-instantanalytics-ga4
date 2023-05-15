@@ -119,16 +119,6 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
     }
 
     /**
-     * Return an Analytics object
-     *
-     * @return null|IAnalytics
-     */
-    public function analytics(): ?IAnalytics
-    {
-        return InstantAnalytics::$plugin->ia->analytics();
-    }
-
-    /**
      * Get a PageView tracking URL
      *
      * @param $url
@@ -149,6 +139,7 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
      * @param string $eventName
      * @param array $params
      * @return Markup
+     * @throws Exception
      */
     public function eventTrackingUrl(
         string $url,

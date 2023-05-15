@@ -59,14 +59,14 @@ use yii\base\Exception;
 class Analytics
 {
     /**
-     * @var BaseRequest
+     * @var BaseRequest|null
      */
-    private BaseRequest $_request;
+    private ?BaseRequest $_request = null;
 
     /**
      * @var Service|null|false
      */
-    private mixed $_service;
+    private mixed $_service = null;
 
     /**
      * @var string|null
@@ -236,10 +236,6 @@ class Analytics
 
     protected function service(): ?Service
     {
-        if ($this->_service === false) {
-            return null;
-        }
-
         if ($this->_service === null) {
             $settings = InstantAnalytics::$settings;
             $apiSecret = App::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
@@ -298,6 +294,10 @@ class Analytics
                 $this->setAffiliation($siteName);
             }
 
+        }
+
+        if ($this->_service === false) {
+            return null;
         }
 
         return $this->_service;
