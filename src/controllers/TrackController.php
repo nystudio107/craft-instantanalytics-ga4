@@ -51,29 +51,16 @@ class TrackController extends Controller
 
     /**
      * @param string $url
-     * @param string $eventCategory
-     * @param string $eventAction
-     * @param string $eventLabel
-     * @param int $eventValue
+     * @param string $eventName
      * @param array $params
      */
     public function actionTrackEventUrl(
         string $url,
-        string $eventCategory = '',
-        string $eventAction = '',
-        string $eventLabel = '',
-        int    $eventValue = 0,
+        string $eventName = '',
         array  $params = [],
     ): void
     {
-        if (empty($params)) {
-            $params['action'] = $eventAction;
-            $params['category'] = $eventCategory;
-            $params['label'] = $eventLabel;
-            $params['value'] = $eventValue;
-        }
-
-        InstantAnalytics::$plugin->ga4->addSimpleEvent($url, $params);
+        InstantAnalytics::$plugin->ga4->addSimpleEvent($url, $eventName, $params);
 
         $this->redirect($url, 200);
     }

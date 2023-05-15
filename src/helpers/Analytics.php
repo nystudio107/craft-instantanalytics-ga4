@@ -12,9 +12,12 @@
 namespace nystudio107\instantanalytics\helpers;
 
 use Craft;
+use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
+use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use nystudio107\instantanalytics\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
+use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -87,5 +90,225 @@ class Analytics
         }
 
         return $url;
+    }
+
+    /**
+     * Get a PageView tracking URL
+     *
+     * @param $url
+     * @param $title
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getPageViewTrackingUrl($url, $title): string
+    {
+        $urlParams = compact('url', 'title');
+
+        $path = parse_url($url, PHP_URL_PATH);
+        $pathFragments = explode('/', rtrim($path, '/'));
+        $fileName = end($pathFragments);
+        $trackingUrl = UrlHelper::siteUrl('instantanalytics/pageViewTrack/' . $fileName, $urlParams);
+
+        InstantAnalytics::$plugin->logAnalyticsEvent(
+            'Created pageViewTrackingUrl for: {trackingUrl}',
+            [
+                'trackingUrl' => $trackingUrl
+            ],
+            __METHOD__
+        );
+
+        return $trackingUrl;
+    }
+
+    /**
+     * Get an Event tracking URL
+     *
+     * @param string $url
+     * @param string $eventName
+     * @param array $params
+     * @return string
+     * @throws Exception
+     */
+    public static function getEventTrackingUrl(
+        string $url,
+        string $eventName = '',
+        array $params = [],
+    ): string
+    {
+        $urlParams = compact('url', 'eventName', 'params');
+
+        $fileName = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_BASENAME);
+        $trackingUrl = UrlHelper::siteUrl('instantanalytics/eventTrack/' . $fileName, $urlParams);
+
+        InstantAnalytics::$plugin->logAnalyticsEvent(
+            'Created eventTrackingUrl for: {trackingUrl}',
+            [
+                'trackingUrl' => $trackingUrl
+            ],
+            __METHOD__
+        );
+
+        return $trackingUrl;
+    }
+
+    /**
+     * _shouldSendAnalytics determines whether we should be sending Google
+     * Analytics data
+     *
+     * @return bool
+     */
+    public static function shouldSendAnalytics(): bool
+    {
+        $result = true;
+        $request = Craft::$app->getRequest();
+
+        $logExclusion = static function (string $setting)
+        {
+            if (InstantAnalytics::$settings->logExcludedAnalytics) {
+                $request = Craft::$app->getRequest();
+                $requestIp = $request->getUserIP();
+                InstantAnalytics::$plugin->logAnalyticsEvent(
+                    'Analytics excluded for:: {requestIp} due to: `{setting}`',
+                    compact('requestIp', 'setting'),
+                    __METHOD__
+                );
+            }
+        };
+        
+        if (!InstantAnalytics::$settings->sendAnalyticsData) {
+            $logExclusion('sendAnalyticsData');
+            return false;
+        }
+
+        if (!InstantAnalytics::$settings->sendAnalyticsInDevMode && Craft::$app->getConfig()->getGeneral()->devMode) {
+            $logExclusion('sendAnalyticsInDevMode');
+            return false;
+        }
+
+        if ($request->getIsConsoleRequest()) {
+            $logExclusion('Craft::$app->getRequest()->getIsConsoleRequest()');
+            return false;
+        }
+
+        if ($request->getIsCpRequest()) {
+            $logExclusion('Craft::$app->getRequest()->getIsCpRequest()');
+            return false;
+        }
+
+        if ($request->getIsLivePreview()) {
+            $logExclusion('Craft::$app->getRequest()->getIsLivePreview()');
+            return false;
+        }
+
+        // Check the $_SERVER[] super-global exclusions
+        if (InstantAnalytics::$settings->serverExcludes !== null
+            && is_array(InstantAnalytics::$settings->serverExcludes)) {
+            foreach (InstantAnalytics::$settings->serverExcludes as $match => $matchArray) {
+                if (isset($_SERVER[$match])) {
+                    foreach ($matchArray as $matchItem) {
+                        if (preg_match($matchItem, $_SERVER[$match])) {
+                            $logExclusion('serverExcludes');
+
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Filter out bot/spam requests via UserAgent
+        if (InstantAnalytics::$settings->filterBotUserAgents) {
+            $crawlerDetect = new CrawlerDetect;
+            // Check the user agent of the current 'visitor'
+            if ($crawlerDetect->isCrawler()) {
+                $logExclusion('filterBotUserAgents');
+
+                return false;
+            }
+        }
+
+        // Filter by user group
+        $userService = Craft::$app->getUser();
+        /** @var UserElement $user */
+        $user = $userService->getIdentity();
+        if ($user) {
+            if (InstantAnalytics::$settings->adminExclude && $user->admin) {
+                $logExclusion('adminExclude');
+
+                return false;
+            }
+
+            if (InstantAnalytics::$settings->groupExcludes !== null
+                && is_array(InstantAnalytics::$settings->groupExcludes)) {
+                foreach (InstantAnalytics::$settings->groupExcludes as $matchItem) {
+                    if ($user->isInGroup($matchItem)) {
+                        $logExclusion('groupExcludes');
+
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * getClientId handles the parsing of the _ga cookie or setting it to a
+     * unique identifier
+     *
+     * @return string the cid
+     */
+    public static function getClientId(): string
+    {
+        $cid = '';
+        if (isset($_COOKIE['_ga'])) {
+            $parts = explode(".", $_COOKIE['_ga'], 4);
+            if ($parts !== false) {
+                $cid = implode('.', array_slice($parts, 2));
+            }
+        } elseif (isset($_COOKIE['_ia']) && $_COOKIE['_ia'] !== '') {
+            $cid = $_COOKIE['_ia'];
+        } else {
+            // Only generate our own unique clientId if `requireGaCookieClientId` isn't true
+            if (!InstantAnalytics::$settings->requireGaCookieClientId) {
+                $cid = static::gaGenUUID();
+            }
+        }
+        if (InstantAnalytics::$settings->createGclidCookie && !empty($cid)) {
+            setcookie('_ia', $cid, strtotime('+2 years'), '/'); // Two years
+        }
+
+        return $cid;
+    }
+
+    /**
+     * gaGenUUID Generate UUID v4 function - needed to generate a CID when one
+     * isn't available
+     *
+     * @return string The generated UUID
+     */
+    protected static function gaGenUUID()
+    {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            // 16 bits for "time_mid"
+            mt_rand(0, 0xffff),
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand(0, 0x0fff) | 0x4000,
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand(0, 0x3fff) | 0x8000,
+            // 48 bits for "node"
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 }

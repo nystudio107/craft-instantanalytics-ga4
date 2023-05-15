@@ -20,8 +20,11 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
+use craft\helpers\UrlHelper;
+use nystudio107\instantanalytics\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalytics\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
+use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -70,6 +73,8 @@ class Analytics
      */
     private ?string $_affiliation;
 
+    private ?bool $_shouldSendAnalytics = null;
+
     /**
      * Component factory for creating events.
      *
@@ -100,6 +105,14 @@ class Analytics
      */
     public function sendCollectedEvents(): ?BaseResponse
     {
+        if ($this->_shouldSendAnalytics === null) {
+            $this->_shouldSendAnalytics = AnalyticsHelper::shouldSendAnalytics();
+        }
+
+        if (!$this->_shouldSendAnalytics) {
+            return null;
+        }
+
         $service = $this->service();
 
         if (!$service) {
@@ -215,7 +228,7 @@ class Analytics
     protected function request(): BaseRequest
     {
         if ($this->_request === null) {
-            $this->_request = new BaseRequest(InstantAnalytics::$plugin->getIa()->getClientId());
+            $this->_request = new BaseRequest(AnalyticsHelper::getClientId());
         }
 
         return $this->_request;

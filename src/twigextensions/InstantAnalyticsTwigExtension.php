@@ -10,8 +10,11 @@
 
 namespace nystudio107\instantanalytics\twigextensions;
 
+use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use Craft;
 use craft\helpers\Template;
+use nystudio107\instantanalytics\ga4\events\PageViewEvent;
+use nystudio107\instantanalytics\helpers\Analytics;
 use nystudio107\instantanalytics\helpers\IAnalytics;
 use nystudio107\instantanalytics\InstantAnalytics;
 use Twig\Extension\AbstractExtension;
@@ -71,8 +74,8 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
     public function getFilters(): array
     {
         return [
-            new TwigFilter('pageViewAnalytics', [$this, 'pageViewAnalytics']),
-            new TwigFilter('eventAnalytics', [$this, 'eventAnalytics']),
+            new TwigFilter('pageViewEvent', [$this, 'pageViewEvent']),
+            new TwigFilter('simpleAnalyticsEvent', [$this, 'simpleEvent']),
             new TwigFilter('pageViewTrackingUrl', [$this, 'pageViewTrackingUrl']),
             new TwigFilter('eventTrackingUrl', [$this, 'eventTrackingUrl']),
         ];
@@ -84,8 +87,8 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('pageViewAnalytics', [$this, 'pageViewAnalytics']),
-            new TwigFunction('eventAnalytics', [$this, 'eventAnalytics']),
+            new TwigFunction('pageViewEvent', [$this, 'pageViewEvent']),
+            new TwigFunction('simpleAnalyticsEvent', [$this, 'simpleEvent']),
             new TwigFunction('pageViewTrackingUrl', [$this, 'pageViewTrackingUrl']),
             new TwigFunction('eventTrackingUrl', [$this, 'eventTrackingUrl']),
         ];
@@ -97,26 +100,22 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
      * @param string $url
      * @param string $title
      *
-     * @return null|IAnalytics object
+     * @return PageViewEvent object
      */
-    public function pageViewAnalytics(string $url = '', string $title = ''): ?IAnalytics
+    public function pageViewEvent(string $url = '', string $title = ''): PageViewEvent
     {
-        return InstantAnalytics::$plugin->ia->pageViewAnalytics($url, $title);
+        return InstantAnalytics::$plugin->ga4->getPageViewEvent($url, $title);
     }
 
     /**
      * Get an Event analytics object
      *
-     * @param string $eventCategory
-     * @param string $eventAction
-     * @param string $eventLabel
-     * @param int $eventValue
-     *
-     * @return null|IAnalytics
+     * @param string $eventName
+     * @return BaseEvent
      */
-    public function eventAnalytics(string $eventCategory = '', string $eventAction = '', string $eventLabel = '', int $eventValue = 0): ?IAnalytics
+    public function simpleEvent(string $eventName = ''): BaseEvent
     {
-        return InstantAnalytics::$plugin->ia->eventAnalytics($eventCategory, $eventAction, $eventLabel, $eventValue);
+        return InstantAnalytics::$plugin->ga4->getSimpleEvent($eventName);
     }
 
     /**
@@ -140,35 +139,23 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
      */
     public function pageViewTrackingUrl($url, $title): Markup
     {
-        return Template::raw(InstantAnalytics::$plugin->ia->pageViewTrackingUrl($url, $title));
+        return Template::raw(Analytics::getPageViewTrackingUrl($url, $title));
     }
 
     /**
      * Get an Event tracking URL
      *
      * @param string $url
-     * @param string $eventCategory
-     * @param string $eventAction
-     * @param string $eventLabel
-     * @param int $eventValue
-     *
+     * @param string $eventName
+     * @param array $params
      * @return Markup
-     * @throws Exception
      */
     public function eventTrackingUrl(
         string $url,
-        string $eventCategory = '',
-        string $eventAction = '',
-        string $eventLabel = '',
-        int    $eventValue = 0
+        string $eventName = '',
+        array $params = []
     ): Markup
     {
-        return Template::raw(InstantAnalytics::$plugin->ia->eventTrackingUrl(
-            $url,
-            $eventCategory,
-            $eventAction,
-            $eventLabel,
-            $eventValue
-        ));
+        return Template::raw(Analytics::getEventTrackingUrl($url, $eventName, $params));
     }
 }

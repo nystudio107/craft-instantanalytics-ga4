@@ -10,6 +10,7 @@
 
 namespace nystudio107\instantanalytics\services;
 
+use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use Craft;
 use craft\base\Component;
 use nystudio107\instantanalytics\ga4\Analytics;
@@ -57,7 +58,7 @@ class Ga4 extends Component
         if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest() && !$this->_pageViewSent) {
             $this->_pageViewSent = true;
 
-            $pageView = $this->createPageViewEvent($url, !empty($pageTitle) ? $pageTitle : InstantAnalytics::$currentTemplate);
+            $pageView = $this->getPageViewEvent($url, !empty($pageTitle) ? $pageTitle : InstantAnalytics::$currentTemplate);
             $this->getAnalytics()->addEvent($pageView);
 
             InstantAnalytics::$plugin->logAnalyticsEvent(
@@ -72,20 +73,20 @@ class Ga4 extends Component
      * Add a basic event to be sent to GA4
      *
      * @param string $url
+     * @param string $eventName
      * @param array $params
      */
-    public function addSimpleEvent(string $url, array $params): void
+    public function addSimpleEvent(string $url, string $eventName, array $params): void
     {
-        $baseEvent = $this->getAnalytics()->create()->BaseEvent();
+        $baseEvent = $this->getSimpleEvent($eventName);
         $baseEvent->setDocumentPath(parse_url($url, PHP_URL_PATH));
 
         foreach ($params as $param => $value) {
-            $method = 'set' . ucfirst($param);
-            $baseEvent->$method($value);
+            $baseEvent->addParam($param, $value);
         }
 
         $this->getAnalytics()->addEvent($baseEvent);
-        
+
         InstantAnalytics::$plugin->logAnalyticsEvent(
             'Simple event queued for {url} with the following parameters {params}',
             ['url' => $url, 'params' => Json::encode($params)],
@@ -100,7 +101,7 @@ class Ga4 extends Component
      * @param string $pageTitle
      * @return PageViewEvent
      */
-    protected function createPageViewEvent(string $url = '', string $pageTitle = ''): PageViewEvent
+    public function getPageViewEvent(string $url = '', string $pageTitle = ''): PageViewEvent
     {
         $event = $this->getAnalytics()->create()->PageViewEvent();
         $event->setPageTitle($pageTitle);
@@ -115,5 +116,19 @@ class Ga4 extends Component
         $event->setPageLocation(AnalyticsHelper::getDocumentPathFromUrl($url));
 
         return $event;
+    }
+
+    /**
+     * Create a simple event
+     *
+     * @param string $eventName
+     * @return BaseEvent
+     */
+    public function getSimpleEvent(string $eventName): BaseEvent
+    {
+        $baseEvent = $this->getAnalytics()->create()->BaseEvent();
+        $baseEvent->setName($eventName);
+
+        return $baseEvent;
     }
 }

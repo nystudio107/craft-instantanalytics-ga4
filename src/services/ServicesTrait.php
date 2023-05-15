@@ -59,14 +59,14 @@ trait ServicesTrait
     // =========================================================================
 
     /**
-     * Returns the ia service
+     * Returns the GA4 service
      *
-     * @return IAService The ia service
+     * @return Ga4 The GA4 service
      * @throws InvalidConfigException
      */
-    public function getIa(): IAService
+    public function getGa4(): Ga4
     {
-        return $this->get('ia');
+        return $this->get('ga4');
     }
 
     /**
