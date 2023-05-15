@@ -45,8 +45,7 @@ class TrackController extends Controller
      */
     public function actionTrackPageViewUrl(string $url, string $title): void
     {
-        $analytics = InstantAnalytics::$plugin->ia->pageViewAnalytics($url, $title);
-        $analytics?->sendPageview();
+        InstantAnalytics::$plugin->ga4->addPageViewEvent($url, $title);
         $this->redirect($url, 200);
     }
 
@@ -56,25 +55,26 @@ class TrackController extends Controller
      * @param string $eventAction
      * @param string $eventLabel
      * @param int $eventValue
+     * @param array $params
      */
     public function actionTrackEventUrl(
         string $url,
-        string $eventCategory,
-        string $eventAction,
-        string $eventLabel,
-        int    $eventValue
+        string $eventCategory = '',
+        string $eventAction = '',
+        string $eventLabel = '',
+        int    $eventValue = 0,
+        array  $params = [],
     ): void
     {
-        $analytics = InstantAnalytics::$plugin->ia->eventAnalytics(
-            $eventCategory,
-            $eventAction,
-            $eventLabel,
-            $eventValue
-        );
-        // Get the file name
-        $path = parse_url($url, PHP_URL_PATH);
-        $analytics?->setDocumentPath($path)
-            ->sendEvent();
+        if (empty($params)) {
+            $params['action'] = $eventAction;
+            $params['category'] = $eventCategory;
+            $params['label'] = $eventLabel;
+            $params['value'] = $eventValue;
+        }
+
+        InstantAnalytics::$plugin->ga4->addSimpleEvent($url, $params);
+
         $this->redirect($url, 200);
     }
 }

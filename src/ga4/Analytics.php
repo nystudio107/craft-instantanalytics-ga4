@@ -115,6 +115,8 @@ class Analytics
                 ['count' => $eventCount],
                 __METHOD__
             );
+
+            return null;
         }
 
         if ($eventCount === 0) {

@@ -189,7 +189,7 @@ class InstantAnalytics extends Plugin
      */
     public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context): string
     {
-        $this->addPageViewEvent();
+        $this->ga4->addPageViewEvent();
         return '';
     }
 
@@ -212,7 +212,8 @@ class InstantAnalytics extends Plugin
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
         // Install our template hook
-        $view->hook('iaSendPageView', fn(array $context): string => $this->iaSendPageView($context));
+        $view->hook('iaSendPageView', fn(array $context): string => $this->ga4->addPageViewEvent());
+
         // Register our variables
         Event::on(
             CraftVariable::class,
@@ -368,29 +369,7 @@ class InstantAnalytics extends Plugin
     // Private Methods
     // =========================================================================
 
-    /**
-     * Send a page view with the pre-loaded IAnalytics object
-     */
-    private function addPageViewEvent(): void
-    {
-        $request = Craft::$app->getRequest();
-
-        if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest() && !self::$pageViewSent) {
-            self::$pageViewSent = true;
-
-            $pageView = $this->ga4->getPageViewEvent(self::$currentTemplate);
-            $this->ga4->getAnalytics()->addEvent($pageView);
-
-            $this->logAnalyticsEvent(
-                'pageView event queued for sending',
-                [],
-                __METHOD__
-            );
-        }
-    }
-
-
-    /**
+     /**
      * @param $layoutId
      *
      * @return mixed[]|array<string, string>
