@@ -21,7 +21,6 @@ use yii\base\InvalidConfigException;
  * @package   InstantAnalytics
  * @since     4.0.0
  *
- * @property IAService $ia
  * @property Ga4 $ga4
  * @property CommerceService $commerce
  * @property VitePluginService $vite
