@@ -303,12 +303,22 @@ class InstantAnalytics extends Plugin
         // Send the collected events
         Event::on(
             Response::class,
+            Response::EVENT_BEFORE_SEND,
+            function (Event $event): void {
+                // Initialize this sooner rather than later, since it's possible this will want to tinker with cookies
+                $this->ga4->getAnalytics();
+            }
+        );
+
+        // Send the collected events
+        Event::on(
+            Response::class,
             Response::EVENT_AFTER_SEND,
             function (Event $event): void {
                 $this->ga4->getAnalytics()->sendCollectedEvents();
             }
         );
-        
+
         // Commerce-specific hooks
         if (self::$commercePlugin !== null) {
             Event::on(Order::class, Order::EVENT_AFTER_COMPLETE_ORDER, function (Event $e): void {
@@ -352,7 +362,7 @@ class InstantAnalytics extends Plugin
     protected function customFrontendRoutes(): array
     {
         return [
-            'instantanalytics/pageViewTrack/<filename:[-\w\.*]+>?' =>
+            'instantanalytics/pageViewTrack' =>
                 'instant-analytics/track/track-page-view-url',
             'instantanalytics/eventTrack/<filename:[-\w\.*]+>?' =>
                 'instant-analytics/track/track-event-url',

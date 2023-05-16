@@ -20,11 +20,9 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
-use craft\helpers\UrlHelper;
 use nystudio107\instantanalytics\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalytics\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
-use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -71,7 +69,7 @@ class Analytics
     /**
      * @var string|null
      */
-    private ?string $_affiliation;
+    private ?string $_affiliation = null;
 
     private ?bool $_shouldSendAnalytics = null;
 
@@ -232,6 +230,15 @@ class Analytics
         }
 
         return $this->_request;
+    }
+
+    /**
+     * Init the service used to send events
+     */
+    public function init(): void
+    {
+        $this->service();
+        $this->request();
     }
 
     protected function service(): ?Service

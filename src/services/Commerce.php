@@ -47,13 +47,13 @@ class Commerce extends Component
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->PurchaseEvent();
             $this->addCommerceOrderToEvent($event, $order);
 
+            InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
+
             InstantAnalytics::$plugin->logAnalyticsEvent(
-                'Adding order complete event for `Commerce` - `Purchase` - `{reference}` - `{price}`',
+                'Adding `Commerce - Order Complete event`: `{reference}` => `{price}`',
                 ['reference' => $order->reference, 'price' => $order->totalPrice],
                 __METHOD__
             );
-
-            InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
         }
     }
 
@@ -66,9 +66,10 @@ class Commerce extends Component
     {
         $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->AddToCartEvent();
         $this->addProductDataFromLineItem($event, $lineItem);
+        InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
         InstantAnalytics::$plugin->logAnalyticsEvent(
-            'Adding add to cart event for `Commerce` - `Add to Cart` - `{title}` - `{quantity}`',
+            'Adding `Commerce - Add to Cart event`: `{title}` => `{quantity}`',
             ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty],
             __METHOD__
         );
@@ -83,9 +84,10 @@ class Commerce extends Component
     {
         $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->RemoveFromCartEvent();
         $this->addProductDataFromLineItem($event, $lineItem);
+        InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
         InstantAnalytics::$plugin->logAnalyticsEvent(
-            'Adding remove from cart for `Commerce` - `Remove to Cart` - `{title}` - `{quantity}`',
+            'Adding `Commerce - Remove from Cart event`: `{title}` => `{quantity}`',
             ['title' => $lineItem->purchasable->title ?? $lineItem->getDescription(), 'quantity' => $lineItem->qty],
             __METHOD__
         );

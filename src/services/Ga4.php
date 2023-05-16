@@ -11,6 +11,7 @@
 namespace nystudio107\instantanalytics\services;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
+use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\BaseParameter;
 use Craft;
 use craft\base\Component;
 use nystudio107\instantanalytics\ga4\Analytics;
@@ -43,6 +44,7 @@ class Ga4 extends Component
     {
         if (!$this->_analytics) {
             $this->_analytics = \Craft::createObject(Analytics::class);
+            $this->_analytics->init();
         }
 
         return $this->_analytics;
@@ -82,7 +84,7 @@ class Ga4 extends Component
         $baseEvent->setDocumentPath(parse_url($url, PHP_URL_PATH));
 
         foreach ($params as $param => $value) {
-            $baseEvent->addParam($param, $value);
+            $baseEvent->addParam($param, new BaseParameter($value));
         }
 
         $this->getAnalytics()->addEvent($baseEvent);
