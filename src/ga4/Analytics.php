@@ -171,15 +171,53 @@ class Analytics
         return $this->_affiliation;
     }
 
+    /**
+     * Add a commerce item list impression.
+     *
+     * @param Product|Variant $productVariant
+     * @param $index
+     * @param $listName
+     * @throws \yii\base\InvalidConfigException
+     */
     public function addCommerceProductImpression(Product|Variant $productVariant, $index, $listName) {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
     }
 
+    /**
+     * Add a commerce product list impression.
+     *
+     * @param array $products
+     * @param $listName
+     */
     public function addCommerceProductListImpression(array $products, $listName) {
         InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 
-    public function __call(string $methodName, array $arguments)
+    /**
+     * Set the measurement id.
+     *
+     * @param string $measurementId
+     * @return $this
+     */
+    public function setMeasurementId(string $measurementId): self
+    {
+        $this->service()?->setMeasurementId($measurementId);
+        return $this;
+    }
+
+    /**
+     * Set the API secret.
+     *
+     * @param string $apiSecret
+     * @return $this
+     */
+    public function setApiSecret(string $apiSecret): self
+    {
+        $this->service()?->setApiSecret($apiSecret);
+        return $this;
+    }
+
+    public function __call(string $methodName, array $arguments): ?self
     {
         $knownProperties = [
             'allowGoogleSignals' => 'allow_google_signals',
