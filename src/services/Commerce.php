@@ -214,6 +214,9 @@ class Commerce extends Component
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
             $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
+
+            InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
+
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
                 ['sku' => $productVariant->sku, 'name' => $productVariant->getName(), 'index' => $index],
@@ -235,6 +238,9 @@ class Commerce extends Component
             foreach ($products as $index => $productVariant) {
                 $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
             }
+
+            InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
+
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item list event. Listing {number} of items from the `{listName}` list.',
                 ['number' => count($products), 'listName' => $listName],
@@ -265,7 +271,7 @@ class Commerce extends Component
         $eventItem->setItemName($variant->title);
         $eventItem->setPrice(number_format($variant->price, 2, '.', ''));
 
-        $category = $productVariant->getProduct()->getType()['name'];
+        $category = ($isVariant ? $variant->getProduct() : $productVariant)->getType()['name'];
 
         if (InstantAnalytics::$settings) {
             if (isset(InstantAnalytics::$settings['productCategoryField'])

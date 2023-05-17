@@ -15,7 +15,6 @@ use Craft;
 use craft\helpers\Template;
 use nystudio107\instantanalytics\ga4\events\PageViewEvent;
 use nystudio107\instantanalytics\helpers\Analytics;
-use nystudio107\instantanalytics\helpers\IAnalytics;
 use nystudio107\instantanalytics\InstantAnalytics;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
