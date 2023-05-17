@@ -25,7 +25,7 @@ class PageViewEvent extends BaseEvent
     private $eventName = 'page_view';
 
     /**
-     * PurchaseEvent constructor.
+     * PageViewEvent constructor.
      * @param AbstractParameter[] $paramList
      */
     public function __construct(array $paramList = [])

@@ -209,7 +209,7 @@ class Analytics
         ];
 
         if (str_starts_with($methodName, 'set')) {
-            $methodName = substr($methodName, 3);
+            $methodName = lcfirst(substr($methodName, 3));
 
             $service = $this->service();
             if ($service && !empty($knownProperties[$methodName])) {

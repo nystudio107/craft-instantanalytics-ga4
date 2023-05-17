@@ -22,9 +22,13 @@ class Service extends BaseService
 {
     protected array $additionalParams = [];
 
-    public function setAdditionalQueryParam(string $name, string $value): void
+    public function setAdditionalQueryParam(string $name, ?string $value): void
     {
-        $this->additionalParams[$name] = $value;
+        if ($value === null) {
+            unset($this->additionalParams[$name]);
+        } else {
+            $this->additionalParams[$name] = $value;
+        }
     }
 
     public function deleteAdditionalQueryParam(string $name): void
