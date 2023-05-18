@@ -142,7 +142,7 @@ class InstantAnalyticsTwigExtension extends AbstractExtension implements Globals
      */
     public function eventTrackingUrl(
         string $url,
-        string $eventName = '',
+        string $eventName,
         array $params = []
     ): Markup
     {

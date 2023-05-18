@@ -207,9 +207,11 @@ class Commerce extends Component
      * Add a product impression from a Craft Commerce Product or Variant
      *
      * @param Product|Variant $productVariant the Product or Variant
+     * @param int $index
+     * @param string $listName
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression(Variant|Product $productVariant, $index = 0, $listName = 'default')
+    public function addCommerceProductImpression(Variant|Product $productVariant, int $index = 0, string $listName = 'default'): void
     {
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();

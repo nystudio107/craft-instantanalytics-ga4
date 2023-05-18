@@ -176,10 +176,10 @@ class Analytics
      *
      * @param Product|Variant $productVariant
      * @param $index
-     * @param $listName
+     * @param string $listName
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression(Product|Variant $productVariant, $index, $listName) {
+    public function addCommerceProductImpression(Product|Variant $productVariant, $index, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
     }
 

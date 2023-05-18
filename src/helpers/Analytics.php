@@ -132,7 +132,7 @@ class Analytics
      */
     public static function getEventTrackingUrl(
         string $url,
-        string $eventName = '',
+        string $eventName,
         array $params = [],
     ): string
     {
