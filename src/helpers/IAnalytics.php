@@ -9,11 +9,11 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\helpers;
+namespace nystudio107\instantanalyticsGa4\helpers;
 
 use Craft;
 use Exception;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use TheIconic\Tracking\GoogleAnalytics\Analytics;
 use TheIconic\Tracking\GoogleAnalytics\AnalyticsResponseInterface;
 

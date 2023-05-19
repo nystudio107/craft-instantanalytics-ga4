@@ -8,16 +8,16 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics\variables;
+namespace nystudio107\instantanalyticsGa4\variables;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\helpers\Template;
-use nystudio107\instantanalytics\ga4\Analytics;
-use nystudio107\instantanalytics\ga4\events\PageViewEvent;
-use nystudio107\instantanalytics\helpers\Analytics as AnalyticsHelper;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\ga4\Analytics;
+use nystudio107\instantanalyticsGa4\ga4\events\PageViewEvent;
+use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\pluginvite\variables\ViteVariableInterface;
 use nystudio107\pluginvite\variables\ViteVariableTrait;
 use Twig\Markup;

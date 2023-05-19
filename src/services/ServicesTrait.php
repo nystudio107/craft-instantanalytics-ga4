@@ -8,11 +8,11 @@
  * @copyright Copyright (c) 2022 nystudio107
  */
 
-namespace nystudio107\instantanalytics\services;
+namespace nystudio107\instantanalyticsGa4\services;
 
-use nystudio107\instantanalytics\assetbundles\instantanalytics\InstantAnalyticsAsset;
-use nystudio107\instantanalytics\services\Commerce as CommerceService;
-use nystudio107\instantanalytics\services\IA as IAService;
+use nystudio107\instantanalyticsGa4\assetbundles\instantanalytics\InstantAnalyticsAsset;
+use nystudio107\instantanalyticsGa4\services\Commerce as CommerceService;
+use nystudio107\instantanalyticsGa4\services\IA as IAService;
 use nystudio107\pluginvite\services\VitePluginService;
 use yii\base\InvalidConfigException;
 

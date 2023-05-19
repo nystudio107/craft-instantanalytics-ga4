@@ -5,7 +5,7 @@
  * Time: 13:33
  */
 
-namespace nystudio107\instantanalytics\ga4\events;
+namespace nystudio107\instantanalyticsGa4\ga4\events;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\AbstractParameter;

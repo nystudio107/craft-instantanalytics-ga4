@@ -1,8 +1,8 @@
 {
-  "name": "nystudio107/craft-instantanalytics",
+  "name": "nystudio107/craft-instantanalytics-ga4",
   "description": "Instant Analytics brings full Google Analytics support to your Twig templates and automatic Craft Commerce integration with Google Enhanced Ecommerce",
   "type": "craft-plugin",
-  "version": "4.0.2",
+  "version": "1.0.0-beta",
   "keywords": [
     "craft",
     "cms",
@@ -12,12 +12,13 @@
     "google",
     "measurement",
     "protocol",
-    "analytics"
+    "analytics",
+    "ga4"
   ],
   "support": {
-    "docs": "https://nystudio107.com/docs/instant-analytics/",
-    "issues": "https://nystudio107.com/plugins/instant-analytics/support",
-    "source": "https://github.com/nystudio107/craft-instantanalytics"
+    "docs": "https://nystudio107.com/docs/instant-analytics-ga4/",
+    "issues": "https://nystudio107.com/plugins/instant-analytics-ga4/support",
+    "source": "https://github.com/nystudio107/craft-instantanalytics-ga4"
   },
   "license": "proprietary",
   "authors": [
@@ -43,12 +44,12 @@
   },
   "autoload": {
     "psr-4": {
-      "nystudio107\\instantanalytics\\": "src/"
+      "nystudio107\\instantanalyticsGa4\\": "src/"
     }
   },
   "extra": {
-    "class": "nystudio107\\instantanalytics\\InstantAnalytics",
-    "handle": "instant-analytics",
-    "name": "Instant Analytics"
+    "class": "nystudio107\\instantanalyticsGa4\\InstantAnalytics",
+    "handle": "instant-analytics-ga4",
+    "name": "Instant Analytics GA4"
   }
 }

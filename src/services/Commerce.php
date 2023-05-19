@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics\services;
+namespace nystudio107\instantanalyticsGa4\services;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ItemBaseEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\PurchaseEvent;
@@ -22,7 +22,7 @@ use craft\commerce\models\LineItem;
 use craft\elements\db\CategoryQuery;
 use craft\elements\db\MatrixBlockQuery;
 use craft\elements\db\TagQuery;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 
 /**
  * Commerce Service

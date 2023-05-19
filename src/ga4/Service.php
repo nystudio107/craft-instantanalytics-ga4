@@ -9,7 +9,7 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\ga4;
+namespace nystudio107\instantanalyticsGa4\ga4;
 
 use Br33f\Ga4\MeasurementProtocol\Service as BaseService;
 

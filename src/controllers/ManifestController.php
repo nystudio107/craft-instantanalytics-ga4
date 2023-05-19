@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics\controllers;
+namespace nystudio107\instantanalyticsGa4\controllers;
 
 use Craft;
 use craft\web\Controller;

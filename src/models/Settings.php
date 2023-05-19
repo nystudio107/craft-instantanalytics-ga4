@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics\models;
+namespace nystudio107\instantanalyticsGa4\models;
 
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;

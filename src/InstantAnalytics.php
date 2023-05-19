@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics;
+namespace nystudio107\instantanalyticsGa4;
 
 use Craft;
 use craft\base\Model;
@@ -21,16 +21,15 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
-use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
-use nystudio107\instantanalytics\helpers\Field as FieldHelper;
-use nystudio107\instantanalytics\models\Settings;
-use nystudio107\instantanalytics\services\ServicesTrait;
-use nystudio107\instantanalytics\twigextensions\InstantAnalyticsTwigExtension;
-use nystudio107\instantanalytics\variables\InstantAnalyticsVariable;
+use nystudio107\instantanalyticsGa4\helpers\Field as FieldHelper;
+use nystudio107\instantanalyticsGa4\models\Settings;
+use nystudio107\instantanalyticsGa4\services\ServicesTrait;
+use nystudio107\instantanalyticsGa4\twigextensions\InstantAnalyticsTwigExtension;
+use nystudio107\instantanalyticsGa4\variables\InstantAnalyticsVariable;
 use nystudio107\seomatic\Seomatic;
 use yii\base\Event;
 use yii\web\Response;

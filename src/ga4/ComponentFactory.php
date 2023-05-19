@@ -9,7 +9,7 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\ga4;
+namespace nystudio107\instantanalyticsGa4\ga4;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\AddPaymentInfoEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\AddShippingInfoEvent;
@@ -28,7 +28,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemListEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewSearchResultsEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\ItemParameter;
-use nystudio107\instantanalytics\ga4\events\PageViewEvent;
+use nystudio107\instantanalyticsGa4\ga4\events\PageViewEvent;
 
 /**
  * @author    nystudio107

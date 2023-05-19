@@ -9,13 +9,13 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\helpers;
+namespace nystudio107\instantanalyticsGa4\helpers;
 
 use Craft;
 use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
 use yii\base\Exception;
 

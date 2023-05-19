@@ -8,14 +8,14 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\instantanalytics\twigextensions;
+namespace nystudio107\instantanalyticsGa4\twigextensions;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\BaseEvent;
 use Craft;
 use craft\helpers\Template;
-use nystudio107\instantanalytics\ga4\events\PageViewEvent;
-use nystudio107\instantanalytics\helpers\Analytics;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\ga4\events\PageViewEvent;
+use nystudio107\instantanalyticsGa4\helpers\Analytics;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\Markup;

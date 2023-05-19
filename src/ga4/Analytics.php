@@ -9,7 +9,7 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\ga4;
+namespace nystudio107\instantanalyticsGa4\ga4;
 
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\AbstractEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
@@ -20,8 +20,8 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
-use nystudio107\instantanalytics\helpers\Analytics as AnalyticsHelper;
-use nystudio107\instantanalytics\InstantAnalytics;
+use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
+use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
 
 /**

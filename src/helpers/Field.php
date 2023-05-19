@@ -9,7 +9,7 @@
  * @since     1.0.0
  */
 
-namespace nystudio107\instantanalytics\helpers;
+namespace nystudio107\instantanalyticsGa4\helpers;
 
 use Craft;
 use craft\base\Element;
