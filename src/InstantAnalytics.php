@@ -21,6 +21,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
+use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
@@ -136,7 +137,7 @@ class InstantAnalytics extends Plugin
 
         Craft::info(
             Craft::t(
-                'instant-analytics',
+                'instant-analytics-ga4',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
@@ -169,7 +170,7 @@ class InstantAnalytics extends Plugin
         // Rend the settings template
         try {
             return Craft::$app->getView()->renderTemplate(
-                'instant-analytics/settings',
+                'instant-analytics-ga4/settings',
                 [
                     'settings' => $this->getSettings(),
                     'commerceFields' => $commerceFields,
@@ -196,7 +197,7 @@ class InstantAnalytics extends Plugin
     public function logAnalyticsEvent(string $message, array $variables = [], string $category = ''): void
     {
         Craft::info(
-            Craft::t('instant-analytics', $message, $variables),
+            Craft::t('instant-analytics-ga4', $message, $variables),
             $category
         );
     }
@@ -242,7 +243,7 @@ class InstantAnalytics extends Plugin
                 if ($event->plugin === $this) {
                     $request = Craft::$app->getRequest();
                     if ($request->isCpRequest) {
-                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('instant-analytics/welcome'))->send();
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('instant-analytics-ga4/welcome'))->send();
                     }
                 }
             }
@@ -362,9 +363,9 @@ class InstantAnalytics extends Plugin
     {
         return [
             'instantanalytics/pageViewTrack' =>
-                'instant-analytics/track/track-page-view-url',
+                'instant-analytics-ga4/track/track-page-view-url',
             'instantanalytics/eventTrack/<filename:[-\w\.*]+>?' =>
-                'instant-analytics/track/track-event-url',
+                'instant-analytics-ga4/track/track-event-url',
         ];
     }
 

@@ -4,7 +4,7 @@
     {{ parent() }}
     {% set tagOptions = {
         'depends': [
-            'nystudio107\\instantanalytics\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
+            'nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
         ],
     } %}
     {{ craft.instantAnalytics.register('src/js/app.ts', false, tagOptions, tagOptions) }}

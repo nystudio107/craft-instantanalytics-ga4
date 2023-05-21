@@ -48,7 +48,7 @@ class ManifestController extends Controller
     public function actionResource(string $resourceType = '', string $fileName = ''): Response
     {
         $baseAssetsUrl = Craft::$app->assetManager->getPublishedUrl(
-            '@nystudio107/instantanalytics/assetbundles/instantanalytics/dist',
+            '@nystudio107/instantanalyticsGa4/assetbundles/instantanalyticsGa4/dist',
             true
         );
         $url = "{$baseAssetsUrl}/{$resourceType}/{$fileName}";

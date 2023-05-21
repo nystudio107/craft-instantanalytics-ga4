@@ -11,7 +11,7 @@
 /**
  * Instant Analytics en Translation
  *
- * Returns an array with the string to be translated (as passed to `Craft::t('instant-analytics', '...')`) as
+ * Returns an array with the string to be translated (as passed to `Craft::t('instant-analytics-ga4', '...')`) as
  * the key, and the translation as the value.
  *
  * http://www.yiiframework.com/doc-2.0/guide-tutorial-i18n.html

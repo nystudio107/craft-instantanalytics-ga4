@@ -1,24 +1,24 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
-{% extends 'instant-analytics/_layouts/instantanalytics-cp.twig' %}
+{% extends 'instant-analytics-ga4/_layouts/instantanalytics-cp.twig' %}
 
 {% set title = 'Welcome to Instant Analytics!' %}
 
-{% set docsUrl = "https://github.com/nystudio107/craft-instantanalytics/blob/v1/README.md" %}
-{% set linkGetStarted = url('settings/plugins/instant-analytics') %}
+{% set docsUrl = "https://github.com/nystudio107/craft-instantanalytics-ga4/blob/v1/README.md" %}
+{% set linkGetStarted = url('settings/plugins/instant-analytics-ga4') %}
 
-{% do view.registerAssetBundle("nystudio107\\instantanalytics\\assetbundles\\instantanalytics\\InstantAnalyticsWelcomeAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/instantanalytics/web/assets/dist', true) %}
+{% do view.registerAssetBundle("nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsWelcomeAsset") %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/instantanalyticsGa4/web/assets/dist', true) %}
 
 {% set crumbs = [
     { label: "Instant Analytics", url: url('instant-analytics') },
-    { label: "Welcome"|t, url: url('instant-analytics/welcome') },
+    { label: "Welcome"|t, url: url('instant-analytics-ga4/welcome') },
 ] %}
 
 {% block head %}
     {{ parent() }}
     {% set tagOptions = {
         'depends': [
-            'nystudio107\\instantanalytics\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
+            'nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
         ],
     } %}
     {{ craft.instantAnalytics.register('src/js/welcome.ts', false, tagOptions, tagOptions) }}
@@ -30,10 +30,10 @@
         </div>
         <img class="inline-block" src="{{ baseAssetsUrl ~ '/img/InstantAnalytics-icon.svg' }}" width="30%"
              height="auto"/>
-        <h2>Thanks for using Instant Analytics!</h2>
-        <p>Instant Analytics brings full Google Analytics support to your Twig templates and automatic Craft Commerce
+        <h2>Thanks for using Instant Analytics GA4!</h2>
+        <p>Instant Analytics GA4 brings full Google Analytics 4 support to your Twig templates and automatic Craft Commerce
             integration with Google Enhanced Ecommerce.</p>
-        <p>Instant Analytics also lets you track otherwise untrackable assets & events with Google Analytics, and
+        <p>Instant Analytics GA4 also lets you track otherwise untrackable assets & events with Google Analytics 4, and
             eliminates the need for Javascript tracking.</p>
 
         <p>For more information, please <a href="{{ docsUrl }}" target="_blank" rel="noopener">see the documentation</a>.

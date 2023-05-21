@@ -9,7 +9,7 @@
  */
 
 /**
- * Instant Analytics config.php
+ * Instant Analytics GA4 config.php
  *
  * This file exists only as a template for the Instant Analytics settings.
  * It does nothing on its own.
@@ -24,9 +24,14 @@
 
 return [
     /**
-     * The default Google Analytics tracking ID
+     * The default Google Analytics measurement ID used by GA4.
      */
-    'googleAnalyticsTracking' => '',
+    'googleAnalyticsMeasurementId' => '',
+
+    /**
+     * The default Google Analytics measurement API secret used by GA4.
+     */
+    'googleAnalyticsMeasurementApiSecret' => '',
 
     /**
      * Should the query string be stripped from the page tracking URL?

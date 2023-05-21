@@ -29,7 +29,7 @@ class InstantAnalyticsWelcomeAsset extends AssetBundle
      */
     public function init(): void
     {
-        $this->sourcePath = '@nystudio107/instantanalytics/web/assets/dist';
+        $this->sourcePath = '@nystudio107/instantanalyticsGa4/web/assets/dist';
 
         $this->depends = [
             CpAsset::class,

@@ -77,7 +77,7 @@ class IAnalytics extends Analytics
         } else {
             Craft::warning(
                 Craft::t(
-                    'instant-analytics',
+                    'instant-analytics-ga4',
                     'Craft Commerce is not installed'
                 ),
                 __METHOD__
@@ -101,7 +101,7 @@ class IAnalytics extends Analytics
         } else {
             Craft::warning(
                 Craft::t(
-                    'instant-analytics',
+                    'instant-analytics-ga4',
                     'Craft Commerce is not installed'
                 ),
                 __METHOD__
