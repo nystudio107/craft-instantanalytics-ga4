@@ -133,7 +133,7 @@ class Analytics
     public static function getEventTrackingUrl(
         string $url,
         string $eventName,
-        array $params = [],
+        array $params = []
     ): string
     {
         $urlParams = compact('url', 'eventName', 'params');

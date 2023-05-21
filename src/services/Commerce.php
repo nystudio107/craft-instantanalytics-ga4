@@ -23,6 +23,8 @@ use craft\elements\db\CategoryQuery;
 use craft\elements\db\MatrixBlockQuery;
 use craft\elements\db\TagQuery;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
+use yii\base\InvalidConfigException;
+use function get_class;
 
 /**
  * Commerce Service
@@ -133,7 +135,7 @@ class Commerce extends Component
      * @param string $listName
      *
      * @return string the title of the product
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function addProductDataFromLineItem(ItemBaseEvent $event, LineItem $lineItem, int $index = 0, string $listName = ''): string
     {
@@ -209,9 +211,9 @@ class Commerce extends Component
      * @param Product|Variant $productVariant the Product or Variant
      * @param int $index
      * @param string $listName
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression(Variant|Product $productVariant, int $index = 0, string $listName = 'default'): void
+    public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default'): void
     {
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
@@ -256,7 +258,7 @@ class Commerce extends Component
      *
      * @param Product|Variant $productVariant the Product or Variant
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = 0, $listName = 'default'): void
     {
@@ -337,7 +339,7 @@ class Commerce extends Component
             if (!is_object($srcField)) {
                 return $result;
             }
-            switch (\get_class($srcField)) {
+            switch (get_class($srcField)) {
                 case MatrixBlockQuery::class:
                 case TagQuery::class:
                     break;

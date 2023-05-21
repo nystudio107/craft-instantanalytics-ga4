@@ -30,7 +30,7 @@ class ManifestController extends Controller
     /**
      * @inerhitdoc
      */
-    protected array|bool|int $allowAnonymous = [
+    protected $allowAnonymous = [
         'resource'
     ];
 

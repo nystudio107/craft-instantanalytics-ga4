@@ -69,32 +69,32 @@ class InstantAnalytics extends Plugin
     /**
      * @var null|InstantAnalytics
      */
-    public static ?InstantAnalytics $plugin = null;
+    public static $plugin = null;
 
     /**
      * @var null|Settings
      */
-    public static ?Settings $settings = null;
+    public static $settings = null;
 
     /**
      * @var null|Commerce
      */
-    public static ?Commerce $commercePlugin = null;
+    public static $commercePlugin = null;
 
     /**
      * @var null|Seomatic
      */
-    public static ?Seomatic $seomaticPlugin = null;
+    public static $seomaticPlugin = null;
 
     /**
      * @var string
      */
-    public static string $currentTemplate = '';
+    public static $currentTemplate = '';
 
     /**
      * @var bool
      */
-    public static bool $pageViewSent = false;
+    public static $pageViewSent = false;
 
     // Public Properties
     // =========================================================================
@@ -102,17 +102,17 @@ class InstantAnalytics extends Plugin
     /**
      * @var string
      */
-    public string $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.0.0';
 
     /**
      * @var bool
      */
-    public bool $hasCpSection = false;
+    public $hasCpSection = false;
 
     /**
      * @var bool
      */
-    public bool $hasCpSettings = true;
+    public $hasCpSettings = true;
 
     // Public Methods
     // =========================================================================
@@ -212,8 +212,10 @@ class InstantAnalytics extends Plugin
         $view = Craft::$app->getView();
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
+
+        $ga4 = $this->ga4;
         // Install our template hook
-        $view->hook('iaSendPageView', fn(array $context): string => (string)$this->ga4->addPageViewEvent());
+        $view->hook('iaSendPageView', function (array $context) use ($ga4) { return (string) $ga4->addPageViewEvent(); });
 
         // Register our variables
         Event::on(
@@ -383,7 +385,7 @@ class InstantAnalytics extends Plugin
      /**
      * @param $layoutId
      *
-     * @return mixed[]|array<string, string>
+     * @return array|array<string, string>
      */
     private function getPullFieldsFromLayoutId($layoutId): array
     {

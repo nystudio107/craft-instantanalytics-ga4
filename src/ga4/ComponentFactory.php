@@ -29,6 +29,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemListEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewSearchResultsEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\ItemParameter;
 use Craft;
+use InvalidArgumentException;
 use nystudio107\instantanalyticsGa4\ga4\events\PageViewEvent;
 
 /**
@@ -81,7 +82,7 @@ class ComponentFactory
         ];
 
         if (!array_key_exists($componentName, $componentMap)) {
-            throw new \InvalidArgumentException(Craft::t('instant-analytics-ga4', 'Unknown event type - ' . $componentName));
+            throw new InvalidArgumentException(Craft::t('instant-analytics-ga4', 'Unknown event type - ' . $componentName));
         }
         
         return new $componentMap[$componentName];

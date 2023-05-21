@@ -20,7 +20,7 @@ use Br33f\Ga4\MeasurementProtocol\Service as BaseService;
  */
 class Service extends BaseService
 {
-    protected array $additionalParams = [];
+    protected $additionalParams = [];
 
     public function setAdditionalQueryParam(string $name, ?string $value): void
     {

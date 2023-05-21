@@ -14,6 +14,8 @@ namespace nystudio107\instantanalyticsGa4\ga4;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\AbstractEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
 use Br33f\Ga4\MeasurementProtocol\Dto\Response\BaseResponse;
+use Br33f\Ga4\MeasurementProtocol\Exception\HydrationException;
+use Br33f\Ga4\MeasurementProtocol\Exception\ValidationException;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
 use craft\commerce\elements\Product;
@@ -23,6 +25,7 @@ use craft\helpers\App;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -59,19 +62,19 @@ class Analytics
     /**
      * @var BaseRequest|null
      */
-    private ?BaseRequest $_request = null;
+    private $_request = null;
 
     /**
      * @var Service|null|false
      */
-    private mixed $_service = null;
+    private $_service = null;
 
     /**
      * @var string|null
      */
-    private ?string $_affiliation = null;
+    private $_affiliation = null;
 
-    private ?bool $_shouldSendAnalytics = null;
+    private $_shouldSendAnalytics = null;
 
     /**
      * Component factory for creating events.
@@ -98,8 +101,8 @@ class Analytics
      * Send the events collected so far.
      *
      * @return BaseResponse|null
-     * @throws \Br33f\Ga4\MeasurementProtocol\Exception\HydrationException
-     * @throws \Br33f\Ga4\MeasurementProtocol\Exception\ValidationException
+     * @throws HydrationException
+     * @throws ValidationException
      */
     public function sendCollectedEvents(): ?BaseResponse
     {
@@ -177,9 +180,9 @@ class Analytics
      * @param Product|Variant $productVariant
      * @param $index
      * @param string $listName
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression(Product|Variant $productVariant, $index, string $listName = 'default') {
+    public function addCommerceProductImpression($productVariant, $index, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
     }
 
@@ -201,7 +204,13 @@ class Analytics
      */
     public function setMeasurementId(string $measurementId): self
     {
-        $this->service()?->setMeasurementId($measurementId);
+        $service = $this->service();
+
+        if (!$service) {
+            throw new InvalidConfigException('instant-analytics-ga4', 'Unable to create GA4 service object');
+        }
+
+        $service->setMeasurementId($measurementId);
         return $this;
     }
 
@@ -213,7 +222,12 @@ class Analytics
      */
     public function setApiSecret(string $apiSecret): self
     {
-        $this->service()?->setApiSecret($apiSecret);
+        $service = $this->service();
+
+        if (!$service) {
+            throw new InvalidConfigException('instant-analytics-ga4', 'Unable to create GA4 service object');
+        }
+
         return $this;
     }
 

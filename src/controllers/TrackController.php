@@ -31,7 +31,7 @@ class TrackController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected array|bool|int $allowAnonymous = [
+    protected $allowAnonymous = [
         'track-page-view-url',
         'track-event-url'
     ];
@@ -57,7 +57,7 @@ class TrackController extends Controller
     public function actionTrackEventUrl(
         string $url,
         string $eventName = '',
-        array  $params = [],
+        array  $params = []
     ): void
     {
         InstantAnalytics::$plugin->ga4->addSimpleEvent($url, $eventName, $params);

@@ -43,7 +43,7 @@ class Ga4 extends Component
     public function getAnalytics(): Analytics
     {
         if (!$this->_analytics) {
-            $this->_analytics = \Craft::createObject(Analytics::class);
+            $this->_analytics = Craft::createObject(Analytics::class);
             $this->_analytics->init();
         }
 

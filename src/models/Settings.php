@@ -29,45 +29,45 @@ class Settings extends Model
      * The default Google Analytics measurement ID used by GA4.
      * @var string
      */
-    public string $googleAnalyticsMeasurementId = '';
+    public $googleAnalyticsMeasurementId = '';
 
     /**
      * The default Google Analytics measurement API secret used by GA4.
      * @var string
      */
-    public string $googleAnalyticsMeasurementApiSecret = '';
+    public $googleAnalyticsMeasurementApiSecret = '';
 
     /**
      * The default Google Analytics tracking ID
      *
      * @var string
      */
-    public string $googleAnalyticsTracking = '';
+    public $googleAnalyticsTracking = '';
 
     /**
      * Should the query string be stripped from the page tracking URL?
      *
      * @var bool
      */
-    public bool $stripQueryString = true;
+    public $stripQueryString = true;
 
     /**
      * Should page views be sent automatically when a page view happens?
      *
      * @var bool
      */
-    public bool $autoSendPageView = true;
+    public $autoSendPageView = true;
 
     /**
      * If you plan to use Instant Analytics in conjunction with frontend JavaScript, this setting should be on, so that Instant Analytics requires a `clientId` from the frontend-set GA cookie before it will send analytics data.
      * @var bool
      */
-    public bool $requireGaCookieClientId = true;
+    public $requireGaCookieClientId = true;
 
     /**
      * @var bool Should the GCLID cookie be created if it doesn't exist?
      */
-    public bool $createGclidCookie = true;
+    public $createGclidCookie = true;
 
     /**
      * The field in a Commerce Product Variant that should be used for the
@@ -75,42 +75,42 @@ class Settings extends Model
      *
      * @var string
      */
-    public string $productCategoryField = '';
+    public $productCategoryField = '';
 
     /**
      * The field in a Commerce Product Variant that should be used for the brand
      *
      * @var string
      */
-    public string $productBrandField = '';
+    public $productBrandField = '';
 
     /**
      * Whether add to cart events should be automatically sent
      *
      * @var bool
      */
-    public bool $autoSendAddToCart = true;
+    public $autoSendAddToCart = true;
 
     /**
      * Whether remove from cart events should be automatically sent
      *
      * @var bool
      */
-    public bool $autoSendRemoveFromCart = true;
+    public $autoSendRemoveFromCart = true;
 
     /**
      * Whether purchase complete events should be automatically sent
      *
      * @var bool
      */
-    public bool $autoSendPurchaseComplete = true;
+    public $autoSendPurchaseComplete = true;
 
     /**
      * Controls whether Instant Analytics will send analytics data.
      *
      * @var bool
      */
-    public bool $sendAnalyticsData = true;
+    public $sendAnalyticsData = true;
 
     /**
      * Controls whether Instant Analytics will send analytics data when
@@ -118,14 +118,14 @@ class Settings extends Model
      *
      * @var bool
      */
-    public bool $sendAnalyticsInDevMode = true;
+    public $sendAnalyticsInDevMode = true;
 
     /**
      * Controls whether we should filter out bot UserGents.
      *
      * @var bool
      */
-    public bool $filterBotUserAgents = true;
+    public $filterBotUserAgents = true;
 
     /**
      * Controls whether we should exclude users logged into an admin account
@@ -133,7 +133,7 @@ class Settings extends Model
      *
      * @var bool
      */
-    public bool $adminExclude = false;
+    public $adminExclude = false;
 
     /**
      * Controls whether analytics that blocked from being sent should be logged
@@ -141,7 +141,7 @@ class Settings extends Model
      *
      * @var bool
      */
-    public bool $logExcludedAnalytics = true;
+    public $logExcludedAnalytics = true;
 
     /**
      * Contains an array of Craft user group handles to exclude from Analytics
@@ -150,7 +150,7 @@ class Settings extends Model
      *
      * @var array
      */
-    public array $groupExcludes = [
+    public $groupExcludes = [
     ];
 
     /**
@@ -164,7 +164,7 @@ class Settings extends Model
      *
      * @var array
      */
-    public array $serverExcludes = [
+    public $serverExcludes = [
         'REMOTE_ADDR' => [
             '/^localhost$|^127(?:\.[0-9]+){0,2}\.[0-9]+$|^(?:0*\:)*?:?0*1$/',
         ],
