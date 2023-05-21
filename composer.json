@@ -31,7 +31,6 @@
     "br33f/php-ga4-mp": "^0.1.0",
     "craftcms/cms": "^4.0.0",
     "nystudio107/craft-plugin-vite": "^4.0.0",
-    "theiconic/php-ga-measurement-protocol": "^2.5.1",
     "jaybizzle/crawler-detect": "^1.2.37"
   },
   "config": {
