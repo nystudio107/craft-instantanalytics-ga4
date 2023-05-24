@@ -42,7 +42,7 @@ class Field
     public const BLOCK_FIELD_CLASS_KEY = 'block';
 
     protected const FIELD_CLASSES = [
-        self::TEXT_FIELD_CLASS_KEY => [
+        self::TEXT_FIELD_CLASS_KEY  => [
             CKEditorField::class,
             PlainTextField::class,
             RedactorField::class,
@@ -61,25 +61,24 @@ class Field
     // =========================================================================
 
     /**
-     * Return all the fields from the $layout that are of the type
+     * Return all of the fields from the $layout that are of the type
      * $fieldClassKey
      *
-     * @param string $fieldClassKey
+     * @param string      $fieldClassKey
      * @param FieldLayout $layout
-     * @param bool $keysOnly
+     * @param bool        $keysOnly
      *
      * @return array
      */
     public static function fieldsOfTypeFromLayout(
-        string      $fieldClassKey,
+        string $fieldClassKey,
         FieldLayout $layout,
-        bool        $keysOnly = true
-    ): array
-    {
+        bool $keysOnly = true
+    ): array {
         $foundFields = [];
         if (!empty(self::FIELD_CLASSES[$fieldClassKey])) {
             $fieldClasses = self::FIELD_CLASSES[$fieldClassKey];
-            $fields = $layout->getCustomFields();
+            $fields = $layout->getFields();
             /** @var  $field BaseField */
             foreach ($fields as $field) {
                 /** @var array $fieldClasses */
@@ -103,17 +102,16 @@ class Field
      * Return all of the fields in the $element of the type $fieldClassKey
      *
      * @param Element $element
-     * @param string $fieldClassKey
-     * @param bool $keysOnly
+     * @param string  $fieldClassKey
+     * @param bool    $keysOnly
      *
      * @return array
      */
     public static function fieldsOfTypeFromElement(
         Element $element,
-        string  $fieldClassKey,
-        bool    $keysOnly = true
-    ): array
-    {
+        string $fieldClassKey,
+        bool $keysOnly = true
+    ): array {
         $foundFields = [];
         $layout = $element->getFieldLayout();
         if ($layout !== null) {
@@ -126,8 +124,8 @@ class Field
     /**
      * Return all of the fields from Users layout of the type $fieldClassKey
      *
-     * @param string $fieldClassKey
-     * @param bool $keysOnly
+     * @param string  $fieldClassKey
+     * @param bool    $keysOnly
      *
      * @return array
      */
@@ -139,11 +137,11 @@ class Field
     }
 
     /**
-     * Return all the fields from all Asset Volume layouts of the type
+     * Return all of the fields from all Asset Volume layouts of the type
      * $fieldClassKey
      *
      * @param string $fieldClassKey
-     * @param bool $keysOnly
+     * @param bool   $keysOnly
      *
      * @return array
      */
@@ -155,7 +153,7 @@ class Field
             /** @var Volume $volume */
             try {
                 $layout = $volume->getFieldLayout();
-            } catch (Exception $e) {
+            } catch (InvalidConfigException $e) {
                 $layout = null;
             }
             if ($layout) {
@@ -171,11 +169,11 @@ class Field
     }
 
     /**
-     * Return all the fields from all Global Set layouts of the type
+     * Return all of the fields from all Global Set layouts of the type
      * $fieldClassKey
      *
      * @param string $fieldClassKey
-     * @param bool $keysOnly
+     * @param bool   $keysOnly
      *
      * @return array
      */
@@ -190,8 +188,8 @@ class Field
                 // Prefix the keys with the global set name
                 $prefix = $global->handle;
                 $fields = array_combine(
-                    array_map(static function ($key) use ($prefix) {
-                        return $prefix . '.' . $key;
+                    array_map(function ($key) use ($prefix) {
+                        return $prefix.'.'.$key;
                     }, array_keys($fields)),
                     $fields
                 );
@@ -208,11 +206,11 @@ class Field
     }
 
     /**
-     * Return all the fields in the $matrixBlock of the type $fieldType class
+     * Return all of the fields in the $matrixBlock of the type $fieldType class
      *
      * @param MatrixBlock $matrixBlock
-     * @param string $fieldType
-     * @param bool $keysOnly
+     * @param string      $fieldType
+     * @param bool        $keysOnly
      *
      * @return array
      */
@@ -222,11 +220,11 @@ class Field
 
         try {
             $matrixBlockTypeModel = $matrixBlock->getType();
-        } catch (Exception $e) {
+        } catch (InvalidConfigException $e) {
             $matrixBlockTypeModel = null;
         }
         if ($matrixBlockTypeModel) {
-            $fields = $matrixBlockTypeModel->getCustomFields();
+            $fields = $matrixBlockTypeModel->getFields();
             /** @var  $field BaseField */
             foreach ($fields as $field) {
                 if ($field instanceof $fieldType) {
