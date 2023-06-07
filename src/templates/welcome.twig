@@ -1,0 +1,55 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{% extends 'instant-analytics-ga4/_layouts/instantanalytics-cp.twig' %}
+
+{% set title = 'Welcome to Instant Analytics!' %}
+
+{% set docsUrl = "https://github.com/nystudio107/craft-instantanalytics-ga4/blob/v1/README.md" %}
+{% set linkGetStarted = url('settings/plugins/instant-analytics-ga4') %}
+
+{% do view.registerAssetBundle("nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsWelcomeAsset") %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/instantanalyticsGa4/web/assets/dist', true) %}
+
+{% set crumbs = [
+    { label: "Instant Analytics", url: url('instant-analytics') },
+    { label: "Welcome"|t, url: url('instant-analytics-ga4/welcome') },
+] %}
+
+{% block head %}
+    {{ parent() }}
+    {% set tagOptions = {
+        'depends': [
+            'nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
+        ],
+    } %}
+    {{ craft.instantAnalytics.register('src/js/welcome.ts', false, tagOptions, tagOptions) }}
+{% endblock %}
+
+{% block content %}
+    <div id="cp-nav-content" class="readable" style="text-align:center; margin:0 auto; padding: 5% 10%;">
+        <div id="app-container">
+        </div>
+        <img class="inline-block" src="{{ baseAssetsUrl ~ '/img/InstantAnalytics-icon.svg' }}" width="30%"
+             height="auto"/>
+        <h2>Thanks for using Instant Analytics GA4!</h2>
+        <p>Instant Analytics GA4 brings full Google Analytics 4 support to your Twig templates and automatic Craft Commerce
+            integration with Google Enhanced Ecommerce.</p>
+        <p>Instant Analytics GA4 also lets you track otherwise untrackable assets & events with Google Analytics 4, and
+            eliminates the need for Javascript tracking.</p>
+
+        <p>For more information, please <a href="{{ docsUrl }}" target="_blank" rel="noopener">see the documentation</a>.
+        </p>
+        <p>
+            &nbsp;
+        </p>
+        <p>
+            <a href="{{ linkGetStarted }}">
+                <button class="btn submit">Get Started</button>
+            </a>
+        </p>
+    </div>
+    <div style="text-align:center; margin:0 auto; padding: 0;">
+        <p class="instructions">
+            Brought to you by <a href="http://nystudio107.com" target="_blank" rel="noopener">nystudio107</a>
+        </p>
+    </div>
+{% endblock %}

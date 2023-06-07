@@ -1,0 +1,11 @@
+{% extends "_layouts/cp" %}
+
+{% block head %}
+    {{ parent() }}
+    {% set tagOptions = {
+        'depends': [
+            'nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsAsset'
+        ],
+    } %}
+    {{ craft.instantAnalytics.register('src/js/app.ts', false, tagOptions, tagOptions) }}
+{% endblock %}

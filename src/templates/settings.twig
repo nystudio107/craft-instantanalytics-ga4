@@ -1,0 +1,113 @@
+{#
+/**
+ * Instant Analytics plugin for Craft CMS
+ *
+ * Instant Analytics Settings.twig
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2017 nystudio107
+ * @link      https://nystudio107.com
+ * @package   InstantAnalytics
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("nystudio107\\instantanalyticsGa4\\assetbundles\\instantanalytics\\InstantAnalyticsAsset") %}
+
+{% set commerce = craft.app.plugins.getPlugin('commerce', false) %}
+{% set commerceInstalled = craft.app.plugins.isPluginInstalled('commerce') %}
+{% set commerceEnabled = craft.app.plugins.isPluginEnabled('commerce') %}
+
+{% set commerceEnabled = (commerce and commerceEnabled and commerceInstalled) %}
+
+{{ forms.autosuggestField({
+    label: 'Google Analytics Measurement ID:',
+    instructions: "Enter your Google Analytics Measurement ID here to be used by the GA4 API. Only enter the ID, e.g.: G-XXXXXXXXXX, not the entire script code.",
+    suggestEnvVars: true,
+    id: 'googleAnalyticsMeasurementId',
+    name: 'googleAnalyticsMeasurementId',
+    value: settings['googleAnalyticsMeasurementId'],
+}) }}
+
+{{ forms.autosuggestField({
+    label: 'Google Analytics Measurement API Secret:',
+    instructions: "Enter your Google Analytics Measurement API secret here, to be used by GA4 API.",
+    suggestEnvVars: true,
+    id: 'googleAnalyticsMeasurementApiSecret',
+    name: 'googleAnalyticsMeasurementApiSecret',
+    value: settings['googleAnalyticsMeasurementApiSecret'],
+}) }}
+
+{{ forms.lightswitchField({
+    label: 'Strip Query String from PageView URLs:',
+    instructions: "If this setting is on, the query string will be stripped from PageView URLs before being sent to Google Analytics.  e.g.: `/some/path?token=1235312` would be sent as just `/some/path`",
+    id: 'stripQueryString',
+    name: 'stripQueryString',
+    on: settings['stripQueryString']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Auto Send PageViews:',
+    instructions: "If this setting is on, a PageView will automatically be sent to Google after a every page is rendered. If it is off, you'll need to send it manually using `{% hook 'iaSendPageView' %}`",
+    id: 'autoSendPageView',
+    name: 'autoSendPageView',
+    on: settings['autoSendPageView']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Require GA Cookie clientId:',
+    instructions: "If you plan to use Instant Analytics in conjunction with frontend GA JavaScript tracking, this setting should be on, so that Instant Analytics requires a `clientId` from the frontend-set GA cookie before it will send analytics data.",
+    id: 'requireGaCookieClientId',
+    name: 'requireGaCookieClientId',
+    on: settings['requireGaCookieClientId']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Create GCLID Cookie:',
+    instructions: "Google Click Identifier (GCLID), is a unique tracking parameter that Google uses to transfer information between your Google Ads account and your Google Analytics account. If this setting is on, the GCLID will be created if it doesn't exist for the current request.",
+    id: 'createGclidCookie',
+    name: 'createGclidCookie',
+    on: settings['createGclidCookie']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Auto Send "Add To Cart" Events:',
+    instructions: "If this setting is on, Google Analytics Enhanced Ecommerce events are automatically sent when an item is added to your Craft Commerce cart.",
+    id: 'autoSendAddToCart',
+    name: 'autoSendAddToCart',
+    disabled: (not commerceEnabled),
+    on: settings['autoSendAddToCart']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Auto Send "Remove From Cart" Events:',
+    instructions: "If this setting is on, Google Analytics Enhanced Ecommerce events are automatically sent when an item is removed from your Craft Commerce cart.",
+    id: 'autoSendRemoveFromCart',
+    name: 'autoSendRemoveFromCart',
+    disabled: (not commerceEnabled),
+    on: settings['autoSendRemoveFromCart']}) }}
+
+{{ forms.lightswitchField({
+    label: 'Auto Send "Purchase Complete" Events:',
+    instructions: "If this setting is on, Google Analytics Enhanced Ecommerce events are automatically sent a purchase is completed.",
+    id: 'autoSendPurchaseComplete',
+    name: 'autoSendPurchaseComplete',
+    disabled: (not commerceEnabled),
+    on: settings['autoSendPurchaseComplete']}) }}
+
+{{ forms.selectField({
+    label: 'Commerce Product Category Field:',
+    instructions: "Choose the field in your Product or Variant field layout that should be used for the product's Category field for Google Analytics Enhanced Ecommerce",
+    id: 'productCategoryField',
+    name: 'productCategoryField',
+    options: commerceFields,
+    disabled: (not commerceEnabled),
+    value: settings['productCategoryField'],
+}) }}
+
+{{ forms.selectField({
+    label: 'Commerce Product Brand Field:',
+    instructions: "Choose the field in your Product or Variant field layout that should be used for the product's Brand field for Google Analytics Enhanced Ecommerce",
+    id: 'productBrandField',
+    name: 'productBrandField',
+    options: commerceFields,
+    disabled: (not commerceEnabled),
+    value: settings['productBrandField'],
+}) }}
