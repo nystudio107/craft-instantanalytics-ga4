@@ -31,7 +31,10 @@ class Analytics
      */
     public static function getTitleFromSeomatic(): ?string
     {
-        if (!InstantAnalytics::$seomaticPlugin && Seomatic::$settings->renderEnabled) {
+        if (!InstantAnalytics::$seomaticPlugin) {
+            return null;
+        }
+        if (!Seomatic::$settings->renderEnabled) {
             return null;
         }
         $titleTag = Seomatic::$plugin->title->get('title');
@@ -175,7 +178,7 @@ class Analytics
                 );
             }
         };
-        
+
         if (!InstantAnalytics::$settings->sendAnalyticsData) {
             $logExclusion('sendAnalyticsData');
             return false;
