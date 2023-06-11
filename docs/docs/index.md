@@ -1,8 +1,11 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/badges/quality-score.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/?branch=v1) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/badges/coverage.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/?branch=v1) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/badges/build.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/build-status/v1) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics/badges/code-intelligence.svg?b=v1)](https://scrutinizer-ci.com/code-intelligence)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/quality-score.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v4) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/coverage.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v4) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/build.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/build-status/v4) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/code-intelligence.svg?b=v4)](https://scrutinizer-ci.com/code-intelligence)
+
 
 # Instant Analytics GA4 plugin for Craft CMS 4.x
 
 Instant Analytics GA4 brings full Google Analytics support to your Twig templates and automatic Craft Commerce integration with Google Enhanced Ecommerce.
+
+**Note**: _This is an entirely rewritten plugin to reflect the new data model & API in GA4._
 
 ![Screenshot](./resources/img/plugin-banner.jpg)
 
