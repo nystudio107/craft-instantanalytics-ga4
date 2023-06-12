@@ -56,7 +56,7 @@ The principal flow is that you create the event, populate it with the desired pr
 
 Please note, that the maximum amount of events you can send in a single request is 25.
 
-Here's some sample code to give you an idea of how you'd create an event and send it.
+Here’s some sample code to give you an idea of how you’d create an event and send it.
 
 ```twig
     {% set searchEvent = instantAnalytics.create.SearchEvent %}
@@ -92,7 +92,7 @@ Below is a list of the events you can create via `instantAnalytics.create.`:
 | view_item | ViewItemEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#view_item)
 | view_search_results | ViewSearchResultsEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#view_search_results)
 
-So for example, if you wanted to send a `view_item` event to GA4, you'd create it like this:
+So for example, if you wanted to send a `view_item` event to GA4, you’d create it like this:
 
 Twig:
 
@@ -115,7 +115,7 @@ This just creates the event object. You then will want to add or modify various 
     {% do instantAnalytics.viewItemEvent(searchEvent) %}
 ```
 
-Here's the analogous code in PHP:
+Here’s the analogous code in PHP:
 
 ```php
     $viewItemEvent = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
@@ -125,7 +125,7 @@ Here's the analogous code in PHP:
     InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($viewItemEvent);
 ```
 
-Your IDE should give you auto-complete for the various parameters each event takes, but you can also refer to the [PHP GA4 Measurement Protocol](https://github.com/br33f/php-GA4-Measurement-Protocol) documentation for a static reference.
+Your IDE should give you autocomplete for the various parameters each event takes, but you can also refer to the [PHP GA4 Measurement Protocol](https://github.com/br33f/php-GA4-Measurement-Protocol) documentation for a static reference.
 
 ### Plugin interaction
 
@@ -141,11 +141,11 @@ If you are using Craft Commerce, Instant Analytics will recognize this, and auto
 
 It’ll just work.  In addition to the basic automatic tracking that Instant Analytics does, you can use the `instantAnalytics` object to send additional data to Google Analytics Enhanced Ecommerce:
 
-* `{% do instantAnalytics.addCommerceProductListImpression(PAGE_PRODUCTS, LIST_NAME) %}` - This will send a `ViewItemList` event for a given Craft Commerce product list. `PAGE_PRODUCTS` should be an array of `Product` or `Variant` elements, while `LIST_NAME` should be a name for the product list being displayed. It's optional and defaults to `default` if not specified.
+* `{% do instantAnalytics.addCommerceProductListImpression(PAGE_PRODUCTS, LIST_NAME) %}` - This will send a `ViewItemList` event for a given Craft Commerce product list. `PAGE_PRODUCTS` should be an array of `Product` or `Variant` elements, while `LIST_NAME` should be a name for the product list being displayed. It’s optional and defaults to `default` if not specified.
 * `{% do instantAnalytics.addCommerceProductImpression(PRODUCT_VARIANT, INDEX, LIST_NAME) %}` - This will send a `ViewItem` event for a given Craft Commerce `Product` or `Variant` (you can pass in either in `PRODUCT_VARIANT`).  `INDEX` must be a number between 1-200, and is the position in the list of products where this product appears. This should be used on product listing pages that show a number of products, to indicate that the user has been shown a particular product. `LIST_NAME` is optional = it lets you set the product list name and defaults to `default` if not specified.
 *  `{% do instantAnalytics.addCommerceProductDetailView(PRODUCT_VARIANT) %}` - This will send a `ViewItem` event for a given Craft Commerce `Product` or `Variant` (you can pass in either in `PRODUCT_VARIANT`).  This should be used when the user is shown the detail view of a product.
 
-You can also take advantage of the built in events, such as `AddShippingInfo` like this
+You can also take advantage of the built-in events, such as `AddShippingInfo` like this
 
 ```twig
     {% set shippingInfoEvent = instantAnalytics.create.AddShippingInfo %}
@@ -215,7 +215,7 @@ PHP via Plugin:
         ->setArticleId($articleId);
 ```
 
-You are then free to change any of the parameters as you see fit (as outlined in the examples). Just don't forget to actually enqueue the event for sending
+You are then free to change any of the parameters as you see fit (as outlined in the examples). Just don’t forget to actually enqueue the event for sending
 
 Twig:
 
