@@ -12,9 +12,9 @@ It has the added benefit of not having to load any JavaScript on the frontend to
 * Pages will be tracked even if the client’s browser has JavaScript disabled or blocked
 * JavaScript errors will not cause Google Analytics data to fail to be collected
 
-## Craft Commerce 4 Integration with Google Enhanced Ecommerce
+## Craft Commerce 4 or later Integration with Google Enhanced Ecommerce
 
-If you are using Craft Commerce 4, Instant Analytics will recognize this, and automatically send Google Enhanced Ecommerce data for the following actions:
+If you are using Craft Commerce 4 or later, Instant Analytics will recognize this, and automatically send Google Enhanced Ecommerce data for the following actions:
 
 * **Add to Cart** - When someone adds an item from your Craft Commerce store to their cart.  This will include data for the Product or Variant that was added to the cart.
 * **Remove from Cart** - When someone removes an item from your Craft Commerce store cart (requires Craft Commerce 4.0.0 or later).  This will include data for the Product or Variant that was removed from the cart.

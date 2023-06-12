@@ -13,7 +13,7 @@ Instant Analytics GA4 brings full Google Analytics support to your Twig template
 
 ## Requirements
 
-This plugin requires Craft CMS 4.0.0 or later. Commerce 4 is required for Google Analytics Enhanced eCommerce support.
+This plugin requires Craft CMS 4.0.0 or later. Commerce 4 or later is required for Google Analytics Enhanced eCommerce support.
 
 ## Installation
 
