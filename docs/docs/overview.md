@@ -1,6 +1,6 @@
 # Instant Analytics Overview
 
-Instant Analytics GA4 brings full Google Analytics support to your Twig templates and automatic Craft Commerce integration with Google Enhanced Ecommerce.
+Instant Analytics GA4 brings full Google Analytics 4 support to your Twig templates and automatic Craft Commerce integration with Google Enhanced Ecommerce.
 
 Instant Analytics GA4 also lets you track otherwise untrackable assets & events with Google Analytics, and eliminates the need for JavaScript tracking.
 
