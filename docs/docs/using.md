@@ -21,7 +21,7 @@ That’s it!  Once you have added this hook, Instant Analytics will start sendin
 
 By default, the "title" used for your pages is the current template path; if you have [SEOmatic](https://github.com/nystudio107/seomatic) installed, Instant Analytics will automatically grab the current page title from it.
 
-Instant Analytics will also automatically parse and set any [UTM query stri`ng parameters](https://blog.kissmetrics.com/how-to-use-utm-parameters/) such as `utm_campaign`, `utm_source`, `utm_medium`, and `utm_content` in the analytics object.
+Instant Analytics will also automatically parse and set any [UTM query string parameters](https://blog.kissmetrics.com/how-to-use-utm-parameters/) such as `utm_campaign`, `utm_source`, `utm_medium`, and `utm_content` in the analytics object.
 
 ### Advanced Page Tracking
 
@@ -70,6 +70,62 @@ You can also set arbitrary parameters, if you want. For example
     {% do searchEvent.setSearchTerm(searchTerm).setResultsFound(searchResultCount) %}
     {% do instantAnalytics.addEvent(searchEvent) %}
 ```
+
+#### Event Reference
+
+Below is a list of the events you can create via `instantAnalytics.create.`:
+
+| GA Event name | Instant Analytics GA4 class | Documentation |
+| ---------- | --------- | --------------|
+| add_payment_info | AddPaymentInfoEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#add_payment_info)
+| add_shipping_info | AddShippingInfoEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#add_shipping_info)
+| add_to_cart | AddToCartEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#add_to_cart)
+| begin_checkout | BeginCheckoutEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#begin_checkout)
+| login | LoginEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#login)
+| purchase | PurchaseEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#purchase)
+| refund | RefundEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#refund)
+| remove_from_cart | RemoveFromCartEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#remove_from_cart)
+| search | SearchEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#search)
+| select_item | SelectItemEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#select_item)
+| sign_up | SignUpEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#sign_up)
+| view_cart | ViewCartEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#view_cart)
+| view_item | ViewItemEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#view_item)
+| view_search_results | ViewSearchResultsEvent | [see documentation](https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference/events#view_search_results)
+
+So for example, if you wanted to send a `view_item` event to GA4, you'd create it like this:
+
+Twig:
+
+```twig
+    {# @var viewItemEvent \Br33f\Ga4\MeasurementProtocol\Dto\Event\ViewItemEvent #}
+    {% set viewItemEvent = instantAnalytics.create.ViewItemEvent %}
+```
+
+The `{# @var viewItemEvent` comment is a typehint, which will give you auto-completion of the methods available for the event type in your IDE.
+
+This just creates the event object. You then will want to add or modify various settings available to the event:
+
+```twig
+    {% do viewItemEvent.setValue(51.10).setCurrency('EUR') %}
+```
+
+...and then add the event to Instant Analytics so it will be sent via `isPageViewSend`:
+
+```twig
+    {% do instantAnalytics.viewItemEvent(searchEvent) %}
+```
+
+Here's the analogous code in PHP:
+
+```php
+    $viewItemEvent = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
+    $viewItemEvent
+        ->setValue(51.10)
+        ->setCurrency('EUR');
+    InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($viewItemEvent);
+```
+
+Your IDE should give you auto-complete for the various parameters each event takes, but you can also refer to the [PHP GA4 Measurement Protocol](https://github.com/br33f/php-GA4-Measurement-Protocol) documentation for a static reference.
 
 ### Plugin interaction
 
