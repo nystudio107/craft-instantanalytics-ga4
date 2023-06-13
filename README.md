@@ -38,7 +38,7 @@ Click here -> [Instant Analytics GA4 Documentation](https://nystudio107.com/plug
 
 Some things to do, and ideas for potential features:
 
-* Craft 3.x version of the plugin?
 * Stable release
+* Craft 3.x version of the plugin?
 
 Brought to you by [nystudio107](http://nystudio107.com)
