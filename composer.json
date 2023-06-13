@@ -10,9 +10,8 @@
     "craft-plugin",
     "instant analytics",
     "google",
-    "measurement",
-    "protocol",
     "analytics",
+    "server-side",
     "ga4"
   ],
   "support": {
