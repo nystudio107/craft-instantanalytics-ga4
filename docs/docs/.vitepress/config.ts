@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'Instant Analytics GA4 Plugin',
   description: 'Documentation for the Instant Analytics GA4 plugin',
-  base: '/docs/instant-analytics/',
+  base: '/docs/instant-analytics-ga4/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
