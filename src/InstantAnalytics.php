@@ -21,7 +21,6 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
-use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
@@ -297,7 +296,10 @@ class InstantAnalytics extends Plugin
             View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
             function (TemplateEvent $event): void {
                 if (self::$settings->autoSendPageView) {
-                    $this->ga4->addPageViewEvent();
+                    $request = Craft::$app->getRequest();
+                    if (!$request->getIsAjax()) {
+                        $this->ga4->addPageViewEvent();
+                    }
                 }
             }
         );
@@ -382,7 +384,7 @@ class InstantAnalytics extends Plugin
     // Private Methods
     // =========================================================================
 
-     /**
+    /**
      * @param $layoutId
      *
      * @return array|array<string, string>
