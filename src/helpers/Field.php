@@ -19,6 +19,7 @@ use craft\elements\MatrixBlock;
 use craft\elements\User;
 use craft\fields\Assets as AssetsField;
 use craft\fields\Categories as CategoriesField;
+use craft\fields\Entries as EntriesField;
 use craft\fields\Matrix as MatrixField;
 use craft\fields\PlainText as PlainTextField;
 use craft\fields\Tags as TagsField;
@@ -48,6 +49,7 @@ class Field
             RedactorField::class,
             TagsField::class,
             CategoriesField::class,
+            EntriesField::class,
         ],
         self::ASSET_FIELD_CLASS_KEY => [
             AssetsField::class,
