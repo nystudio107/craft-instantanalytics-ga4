@@ -20,6 +20,7 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\commerce\models\LineItem;
 use craft\elements\db\CategoryQuery;
+use craft\elements\db\EntryQuery;
 use craft\elements\db\MatrixBlockQuery;
 use craft\elements\db\TagQuery;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
@@ -342,6 +343,7 @@ class Commerce extends Component
                 case TagQuery::class:
                     break;
                 case CategoryQuery::class:
+                case EntryQuery::class:
                     $result = $this->getDataFromElements($isBrand, $srcField->all());
                     break;
 
