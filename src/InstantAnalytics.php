@@ -124,15 +124,14 @@ class InstantAnalytics extends Plugin
         parent::init();
         self::$plugin = $this;
         self::$settings = $this->getSettings();
-
-        // Determine if Craft Commerce is installed & enabled
-        self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
-        // Determine if SEOmatic is installed & enabled
-        self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
-        // Add in our Craft components
-        $this->addComponents();
-        // Install our global event handlers
-        $this->installEventListeners();
+        
+        // Defer most setup tasks until Craft is fully initialized
+        Craft::$app->onInit(function () {
+            // Add in our Craft components
+            $this->addComponents();
+            // Install our global event handlers
+            $this->installEventListeners();
+        });
 
         Craft::info(
             Craft::t(
@@ -245,6 +244,17 @@ class InstantAnalytics extends Plugin
                         Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('instant-analytics-ga4/welcome'))->send();
                     }
                 }
+            }
+        );
+        // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_LOAD_PLUGINS,
+            function () {
+                // Determine if Craft Commerce is installed & enabled
+                self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
+                // Determine if SEOmatic is installed & enabled
+                self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
             }
         );
         $request = Craft::$app->getRequest();
