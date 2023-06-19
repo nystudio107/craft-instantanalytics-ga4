@@ -8,6 +8,9 @@
 * No longer automatic send page views for requests that are AJAX (XHR's) ([#3](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/3)) 
 * Fixed a bug where sending a product view impression for a product might trigger an error.
 
+### Changed
+* ClientId is now always generated, if missing and the setting `requireGaCookieClientId` has been removed.
+
 ## 4.0.0-beta.1 - 2023.06.13
 ### Added
 * Initial beta release
