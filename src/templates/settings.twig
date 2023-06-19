@@ -55,13 +55,6 @@
     on: settings['autoSendPageView']}) }}
 
 {{ forms.lightswitchField({
-    label: 'Require GA Cookie clientId:',
-    instructions: "If you plan to use Instant Analytics in conjunction with frontend GA JavaScript tracking, this setting should be on, so that Instant Analytics requires a `clientId` from the frontend-set GA cookie before it will send analytics data.",
-    id: 'requireGaCookieClientId',
-    name: 'requireGaCookieClientId',
-    on: settings['requireGaCookieClientId']}) }}
-
-{{ forms.lightswitchField({
     label: 'Create GCLID Cookie:',
     instructions: "Google Click Identifier (GCLID), is a unique tracking parameter that Google uses to transfer information between your Google Ads account and your Google Analytics account. If this setting is on, the GCLID will be created if it doesn't exist for the current request.",
     id: 'createGclidCookie',
