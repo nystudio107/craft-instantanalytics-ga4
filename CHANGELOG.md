@@ -3,6 +3,7 @@
 ## 4.0.0-beta.3 - UNRELEASED
 ### Added
 * It is now possible to select Entry fields for Commerce Product Category and Brand fields. ([#2](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/2))
+* Added `addCommerceProductDetailView()` as a deprecated method.
 
 ## 4.0.0-beta.2 - 2023.06.13
 ### Fixed
