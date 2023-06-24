@@ -193,9 +193,9 @@ class Analytics
      * @param $index
      * @param string $listName
      * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function addCommerceProductDetailView(Product|Variant $productVariant, $index, string $listName = 'default') {
+    public function addCommerceProductDetailView($productVariant, $index, string $listName = 'default') {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
     }
