@@ -91,6 +91,7 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
+        $event->setSessionId()
         return $this->request()->addEvent($event);
     }
 
@@ -278,7 +279,8 @@ class Analytics
     protected function request(): BaseRequest
     {
         if ($this->_request === null) {
-            $this->_request = new BaseRequest(AnalyticsHelper::getClientId());
+            $this->_request = new BaseRequest();
+            $this->_request->setClientId(AnalyticsHelper::getClientId());
         }
 
         return $this->_request;
