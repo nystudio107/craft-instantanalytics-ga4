@@ -223,9 +223,10 @@ class Commerce extends Component
             InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
             $sku = $productVariant instanceof Product ? $productVariant->getDefaultVariant()->sku : $productVariant->sku;
+            $name = $productVariant instanceof Product ? $productVariant->getName() : $productVariant->getProduct()->getName();
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
-                ['sku' => $sku, 'name' => $productVariant->getName(), 'index' => $index],
+                ['sku' => $sku, 'name' => $name, 'index' => $index],
                 __METHOD__
             );
         }
