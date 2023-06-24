@@ -94,7 +94,6 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
-        $event->setSessionId()
         return $this->request()->addEvent($event);
     }
 
