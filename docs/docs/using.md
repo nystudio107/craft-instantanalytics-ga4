@@ -142,8 +142,7 @@ If you are using Craft Commerce, Instant Analytics will recognize this, and auto
 It’ll just work.  In addition to the basic automatic tracking that Instant Analytics does, you can use the `instantAnalytics` object to send additional data to Google Analytics Enhanced Ecommerce:
 
 * `{% do instantAnalytics.addCommerceProductListImpression(PAGE_PRODUCTS, LIST_NAME) %}` - This will send a `ViewItemList` event for a given Craft Commerce product list. `PAGE_PRODUCTS` should be an array of `Product` or `Variant` elements, while `LIST_NAME` should be a name for the product list being displayed. It’s optional and defaults to `default` if not specified.
-* `{% do instantAnalytics.addCommerceProductImpression(PRODUCT_VARIANT, INDEX, LIST_NAME) %}` - This will send a `ViewItem` event for a given Craft Commerce `Product` or `Variant` (you can pass in either in `PRODUCT_VARIANT`).  `INDEX` must be a number between 1-200, and is the position in the list of products where this product appears. This should be used on product listing pages that show a number of products, to indicate that the user has been shown a particular product. `LIST_NAME` is optional = it lets you set the product list name and defaults to `default` if not specified.
-*  `{% do instantAnalytics.addCommerceProductDetailView(PRODUCT_VARIANT) %}` - This will send a `ViewItem` event for a given Craft Commerce `Product` or `Variant` (you can pass in either in `PRODUCT_VARIANT`).  This should be used when the user is shown the detail view of a product.
+* `{% do instantAnalytics.addCommerceProductImpression(PRODUCT_VARIANT) %}` - This will send a `ViewItem` event for a given Craft Commerce `Product` or `Variant` (you can pass in either in `PRODUCT_VARIANT`).
 
 You can also take advantage of the built-in events, such as `AddShippingInfo` like this
 
