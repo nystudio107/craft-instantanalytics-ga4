@@ -20,6 +20,7 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\commerce\models\LineItem;
 use craft\elements\db\CategoryQuery;
+use craft\elements\db\EntryQuery;
 use craft\elements\db\MatrixBlockQuery;
 use craft\elements\db\TagQuery;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
@@ -219,9 +220,11 @@ class Commerce extends Component
 
             InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
+            $sku = $productVariant instanceof Product ? $productVariant->getDefaultVariant()->sku : $productVariant->sku;
+            $name = $productVariant instanceof Product ? $productVariant->getName() : $productVariant->getProduct()->getName();
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
-                ['sku' => $productVariant->sku, 'name' => $productVariant->getName(), 'index' => $index],
+                ['sku' => $sku, 'name' => $name, 'index' => $index],
                 __METHOD__
             );
         }
@@ -342,6 +345,7 @@ class Commerce extends Component
                 case TagQuery::class:
                     break;
                 case CategoryQuery::class:
+                case EntryQuery::class:
                     $result = $this->getDataFromElements($isBrand, $srcField->all());
                     break;
 
