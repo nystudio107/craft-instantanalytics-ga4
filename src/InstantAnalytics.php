@@ -21,7 +21,6 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
-use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
@@ -126,10 +125,6 @@ class InstantAnalytics extends Plugin
         self::$plugin = $this;
         self::$settings = $this->getSettings();
 
-        // Determine if Craft Commerce is installed & enabled
-        self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
-        // Determine if SEOmatic is installed & enabled
-        self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -248,6 +243,17 @@ class InstantAnalytics extends Plugin
                 }
             }
         );
+        // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_LOAD_PLUGINS,
+            static function () {
+                // Determine if Craft Commerce is installed & enabled
+                self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
+                // Determine if SEOmatic is installed & enabled
+                self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
+            }
+        );
         $request = Craft::$app->getRequest();
         // Install only for non-console site requests
         if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
@@ -295,7 +301,10 @@ class InstantAnalytics extends Plugin
             View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
             function (TemplateEvent $event): void {
                 if (self::$settings->autoSendPageView) {
-                    $this->ga4->addPageViewEvent();
+                    $request = Craft::$app->getRequest();
+                    if (!$request->getIsAjax()) {
+                        $this->ga4->addPageViewEvent();
+                    }
                 }
             }
         );
@@ -380,7 +389,7 @@ class InstantAnalytics extends Plugin
     // Private Methods
     // =========================================================================
 
-     /**
+    /**
      * @param $layoutId
      *
      * @return mixed[]|array<string, string>

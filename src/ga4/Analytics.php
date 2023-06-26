@@ -184,6 +184,20 @@ class Analytics
     }
 
     /**
+     * Add a commerce item list impression.
+     *
+     * @param Product|Variant $productVariant
+     * @param $index
+     * @param string $listName
+     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function addCommerceProductDetailView(Product|Variant $productVariant, $index, string $listName = 'default') {
+        Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+    }
+
+    /**
      * Add a commerce product list impression.
      *
      * @param array $products
@@ -264,7 +278,8 @@ class Analytics
     protected function request(): BaseRequest
     {
         if ($this->_request === null) {
-            $this->_request = new BaseRequest(AnalyticsHelper::getClientId());
+            $this->_request = new BaseRequest();
+            $this->_request->setClientId(AnalyticsHelper::getClientId());
         }
 
         return $this->_request;

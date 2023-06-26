@@ -274,11 +274,10 @@ class Analytics
         } elseif (isset($_COOKIE['_ia']) && $_COOKIE['_ia'] !== '') {
             $cid = $_COOKIE['_ia'];
         } else {
-            // Only generate our own unique clientId if `requireGaCookieClientId` isn't true
-            if (!InstantAnalytics::$settings->requireGaCookieClientId) {
-                $cid = static::gaGenUUID();
-            }
+            // Generate our own client id, otherwise.
+            $cid = static::gaGenUUID();
         }
+
         if (InstantAnalytics::$settings->createGclidCookie && !empty($cid)) {
             setcookie('_ia', $cid, strtotime('+2 years'), '/'); // Two years
         }
