@@ -224,7 +224,7 @@ class Commerce extends Component
             $name = $productVariant instanceof Product ? $productVariant->getName() : $productVariant->getProduct()->getName();
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
-                ['sku' => $sku, 'name' => $name, 'index' => $index],
+                ['sku' => $sku, 'name' => $name],
                 __METHOD__
             );
         }
