@@ -208,15 +208,13 @@ class Commerce extends Component
      * Add a product impression from a Craft Commerce Product or Variant
      *
      * @param Product|Variant $productVariant the Product or Variant
-     * @param int $index
-     * @param string $listName
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression(Variant|Product $productVariant, int $index = 0, string $listName = 'default'): void
+    public function addCommerceProductImpression(Variant|Product $productVariant): void
     {
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
-            $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
+            $this->addProductDataFromProductOrVariant($event, $productVariant);
 
             InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
@@ -257,11 +255,11 @@ class Commerce extends Component
     /**
      * Extract product data from a Craft Commerce Product or Variant
      *
-     * @param Product|Variant $productVariant the Product or Variant
+     * @param Product|Variant|null $productVariant the Product or Variant
      *
      * @throws \yii\base\InvalidConfigException
      */
-    protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = 0, $listName = 'default'): void
+    protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, Variant|Product $productVariant = null, $index = null, $listName = ''): void
     {
         $eventItem = $this->getNewItemParameter();
 
@@ -313,8 +311,13 @@ class Commerce extends Component
             }
         }
 
-        $eventItem->setIndex($index);
-        $eventItem->setItemListName($listName);
+        if ($index !== null) {
+            $eventItem->setIndex($index);
+        }
+
+        if (!empty($listName)) {
+            $eventItem->setItemListName($listName);
+        }
 
         // Add item info to the event
         $event->addItem($eventItem);

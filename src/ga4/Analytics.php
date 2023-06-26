@@ -175,26 +175,26 @@ class Analytics
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression(Product|Variant $productVariant, $index, string $listName = 'default') {
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+    public function addCommerceProductImpression(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
     }
 
     /**
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
-     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      * @throws \yii\base\InvalidConfigException
+     *@deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      */
-    public function addCommerceProductDetailView(Product|Variant $productVariant, $index, string $listName = 'default') {
+    public function addCommerceProductDetailView(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+        $this->addCommerceProductImpression($productVariant);
     }
 
     /**

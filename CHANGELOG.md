@@ -1,5 +1,9 @@
 # Instant Analytics GA4 Changelog
 
+## 4.0.0-beta.3 - UNRELEASED
+## Changed
+* `addCommerceProductImpression()` no longer supports list index and list name.
+
 ## 4.0.0-beta.2 - 2023.06.25
 ### Added
 * It is now possible to select Entry fields for Commerce Product Category and Brand fields. ([#2](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/2))
