@@ -1,7 +1,7 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/quality-score.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v4) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/coverage.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v4) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/build.png?b=v4)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/build-status/v4) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/code-intelligence.svg?b=v4)](https://scrutinizer-ci.com/code-intelligence)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/quality-score.png?b=v3)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v3) [![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/coverage.png?b=v3)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/?branch=v3) [![Build Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/build.png?b=v3)](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/build-status/v3) [![Code Intelligence Status](https://scrutinizer-ci.com/g/nystudio107/craft-instantanalytics-ga4/badges/code-intelligence.svg?b=v3)](https://scrutinizer-ci.com/code-intelligence)
 
 
-# Instant Analytics GA4 plugin for Craft CMS 4.x
+# Instant Analytics GA4 plugin for Craft CMS 3.x
 
 Instant Analytics GA4 brings full Google Analytics support to your Twig templates and automatic Craft Commerce integration with Google Enhanced Ecommerce.
 
@@ -13,7 +13,7 @@ Instant Analytics GA4 brings full Google Analytics support to your Twig template
 
 ## Requirements
 
-This plugin requires Craft CMS 4.0.0 or later. Commerce 4 or later is required for Google Analytics Enhanced eCommerce support.
+This plugin requires Craft CMS 3.0.0 or later. Commerce 3 or later is required for Google Analytics Enhanced eCommerce support.
 
 ## Installation
 
