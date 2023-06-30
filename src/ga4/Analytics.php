@@ -21,7 +21,6 @@ use Craft;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
-use craft\helpers\App;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
@@ -312,8 +311,8 @@ class Analytics
     {
         if ($this->_service === null) {
             $settings = InstantAnalytics::$settings;
-            $apiSecret = App::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
-            $measurementId = App::parseEnv($settings->googleAnalyticsMeasurementId);
+            $apiSecret = Craft::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
+            $measurementId = Craft::parseEnv($settings->googleAnalyticsMeasurementId);
 
             if (empty($apiSecret) || empty($measurementId)) {
                 InstantAnalytics::$plugin->logAnalyticsEvent(
