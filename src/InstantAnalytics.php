@@ -125,10 +125,6 @@ class InstantAnalytics extends Plugin
         self::$plugin = $this;
         self::$settings = $this->getSettings();
 
-        // Determine if Craft Commerce is installed & enabled
-        self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
-        // Determine if SEOmatic is installed & enabled
-        self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -249,6 +245,19 @@ class InstantAnalytics extends Plugin
                 }
             }
         );
+        
+        // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_LOAD_PLUGINS,
+            function (Event $event): void {
+                // Determine if Craft Commerce is installed & enabled
+                self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
+                // Determine if SEOmatic is installed & enabled
+                self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
+            }
+        );
+
         $request = Craft::$app->getRequest();
         // Install only for non-console site requests
         if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
