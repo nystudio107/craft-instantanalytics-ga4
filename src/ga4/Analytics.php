@@ -18,6 +18,7 @@ use Br33f\Ga4\MeasurementProtocol\Exception\HydrationException;
 use Br33f\Ga4\MeasurementProtocol\Exception\ValidationException;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
+use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
@@ -191,6 +192,15 @@ class Analytics
      */
     public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
+    }
+
+    /**
+     * Begin checkout.
+     *
+     * @param Order $cart
+     */
+    public function beginCheckout(Order $cart) {
+        InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
     /**
