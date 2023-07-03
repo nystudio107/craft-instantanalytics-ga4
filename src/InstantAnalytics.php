@@ -238,7 +238,7 @@ GTAG;
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
         // Install our template hooks
-        $view->hook('iaSendPageView', [$this, 'iaSendPageView']);'
+        $view->hook('iaSendPageView', [$this, 'iaSendPageView']);
         $view->hook('iaInsertGtag', [$this, 'iaInsertGtag']);
 
         // Register our variables
