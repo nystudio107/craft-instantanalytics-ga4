@@ -26,7 +26,6 @@ use craft\fields\Tags as TagsField;
 use craft\models\FieldLayout;
 use craft\models\Volume;
 use craft\redactor\Field as RedactorField;
-use Exception;
 
 /**
  * @author    nystudio107
