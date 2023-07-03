@@ -310,8 +310,18 @@ class Analytics
     {
         if ($this->_request === null) {
             $this->_request = new BaseRequest();
+
             $this->_request->setClientId(AnalyticsHelper::getClientId());
+
+            if (InstantAnalytics::$settings->sendUserId) {
+                $userId = AnalyticsHelper::getUserId();
+
+                if ($userId) {
+                    $this->request()->setUserId($userId);
+                }
+            }
         }
+
 
         return $this->_request;
     }

@@ -3,9 +3,12 @@
 ## 3.0.0-beta.2 - UNRELEASED
 ## Added
 * Added the `sessionDuration` setting that can be changed via config.php.
+* Added the `instantanalytics.beginCheckout(cart)` action.
+* Added the `sendUserId` setting that can be changed via config.php
 
 ## Changed
 * `addCommerceProductImpression()` no longer supports list index and list name. ([#6](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/6))
+* Instant Analytics GA4 now supports sending user id for logged in users automatically.
 
 ## Fixed
 * Fixed Craft 3.6.x compatibility issue. ([#11](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/11))
