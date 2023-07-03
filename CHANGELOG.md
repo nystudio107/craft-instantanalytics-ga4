@@ -5,7 +5,7 @@
 * Added the `sessionDuration` setting that can be changed via config.php.
 * Added the `instantanalytics.beginCheckout(cart)` action.
 * Added the `sendUserId` setting that can be changed via config.php
-* Added the ‘iaInsertGtag` template hook.
+* Added the `iaInsertGtag` template hook.
 
 ### Changed
 * `addCommerceProductImpression()` no longer supports list index and list name. ([#6](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/6))
