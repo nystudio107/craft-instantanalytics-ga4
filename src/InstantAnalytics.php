@@ -19,6 +19,7 @@ use craft\commerce\Plugin as Commerce;
 use craft\events\PluginEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\TemplateEvent;
+use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use craft\web\twig\variables\CraftVariable;
@@ -202,7 +203,7 @@ class InstantAnalytics extends Plugin
             }
         }
 
-        $measurementId = Craft::parseEnv(self::$settings->googleAnalyticsMeasurementId);
+        $measurementId = App::parseEnv(self::$settings->googleAnalyticsMeasurementId);
 
         return <<<GTAG
 <!-- Google tag (gtag.js) -->
