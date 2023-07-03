@@ -180,13 +180,43 @@ class InstantAnalytics extends Plugin
 
     /**
      * Handle the `{% hook iaSendPageView %}`
-     *
-     *
      */
-    public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context): string
+    public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context = []): string
     {
         $this->ga4->addPageViewEvent();
         return '';
+    }
+
+    /**
+     * Handle the `{% hook iaInsertGtag %}`
+     */
+    public function iaInsertGtag(/** @noinspection PhpUnusedParameterInspection */ array &$context = []): string
+    {
+        $userSegment = '';
+
+        if (self::$settings->sendUserId) {
+            $userId = Analytics::getUserId();
+            if (!empty($userId)) {
+                $userSegment = "'user_id': '$userId'";
+            }
+        }
+
+        $measurementId = Craft::parseEnv(self::$settings->googleAnalyticsMeasurementId);
+
+        return <<<GTAG
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=$measurementId"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '$measurementId', 
+  {
+  $userSegment
+  });
+</script>
+GTAG;
     }
 
     public function logAnalyticsEvent(string $message, array $variables = [], string $category = ''): void
@@ -208,9 +238,9 @@ class InstantAnalytics extends Plugin
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
 
-        $ga4 = $this->ga4;
-        // Install our template hook
-        $view->hook('iaSendPageView', function (array $context) use ($ga4) { return (string) $ga4->addPageViewEvent(); });
+        // Install our template hooks
+        $view->hook('iaSendPageView', [$this, 'iaSendPageView']);
+        $view->hook('iaInsertGtag', [$this, 'iaInsertGtag']);
 
         // Register our variables
         Event::on(
