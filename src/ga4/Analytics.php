@@ -16,6 +16,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
 use Br33f\Ga4\MeasurementProtocol\Dto\Response\BaseResponse;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
+use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
@@ -189,6 +190,15 @@ class Analytics
      */
     public function addCommerceProductImpression(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
+    }
+
+    /**
+     * Begin checkout.
+     *
+     * @param Order $cart
+     */
+    public function beginCheckout(Order $cart) {
+        InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
     /**
