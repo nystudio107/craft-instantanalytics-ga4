@@ -154,8 +154,8 @@ You can also take advantage of the built-in events, such as `AddShippingInfo` li
 
 **Please note**
 Sending GA4 events via the API is not meant to handle all the session information. If you want to take advantage of session tracking and User purchase journey on GA4 console, there are a few steps you must ensure are taken care of:
-1. You need to have a `_ga` Cookie in place, as there is no way to start a session using the API. If you're not using `gTag` or Google Tag Manager already, you can use the `iaInsertGtag` template hook to insert the relevant JavaScript that will start the session for you.
-2. User purhcase journey report is a closed funnel report, which means that any previous step must take place, before user can proceed in the funnel. In practical terms this means the following events _must_ be fired in the following order for the user purhcase journey to be completed.
+1. You need to have a `_ga` Cookie in place, as there is no way to start a session using the API. If you're not using `gtag` or Google Tag Manager already, you can use the `iaInsertGtag` template hook to insert the relevant JavaScript that will start the session for you.
+2. User purchase journey report is a closed funnel report, which means that any previous step must take place, before user can proceed in the funnel. In practical terms this means the following events _must_ be fired in the following order for the user purchase journey to be completed.
 
 ## Sending Events
 
