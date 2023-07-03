@@ -70,6 +70,11 @@ class Settings extends Model
     public bool $createGclidCookie = true;
 
     /**
+     * @var bool Should the user id property be set on events, if user is logged in.
+     */
+    public $sendUserId = true;
+
+    /**
      * @var int The session duration as set in GA4 admin settings.
      */
     public $sessionDuration = 30;
