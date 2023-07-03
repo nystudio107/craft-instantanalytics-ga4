@@ -25,6 +25,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
+use nystudio107\instantanalyticsGa4\helpers\Analytics;
 use nystudio107\instantanalyticsGa4\helpers\Field as FieldHelper;
 use nystudio107\instantanalyticsGa4\models\Settings;
 use nystudio107\instantanalyticsGa4\services\ServicesTrait;
@@ -34,8 +35,6 @@ use nystudio107\seomatic\Seomatic;
 use yii\base\Event;
 use yii\web\Response;
 use function array_merge;
-
-/** @noinspection MissingPropertyAnnotationsInspection */
 
 /**
  * @author    nystudio107
@@ -275,7 +274,7 @@ GTAG;
                 }
             }
         );
-        
+
         // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
         Event::on(
             Plugins::class,
@@ -285,19 +284,20 @@ GTAG;
                 self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
                 // Determine if SEOmatic is installed & enabled
                 self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
+
+                // Make sure to install these only after we definitely know whether other plugins are installed
+                $request = Craft::$app->getRequest();
+                // Install only for non-console site requests
+                if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
+                    $this->installSiteEventListeners();
+                }
+
+                // Install only for non-console Control Panel requests
+                if ($request->getIsCpRequest() && !$request->getIsConsoleRequest()) {
+                    $this->installCpEventListeners();
+                }
             }
         );
-
-        $request = Craft::$app->getRequest();
-        // Install only for non-console site requests
-        if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
-            $this->installSiteEventListeners();
-        }
-
-        // Install only for non-console Control Panel requests
-        if ($request->getIsCpRequest() && !$request->getIsConsoleRequest()) {
-            $this->installCpEventListeners();
-        }
     }
 
     /**
