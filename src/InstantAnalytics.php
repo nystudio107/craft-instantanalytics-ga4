@@ -25,6 +25,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
+use nystudio107\instantanalyticsGa4\helpers\Analytics;
 use nystudio107\instantanalyticsGa4\helpers\Field as FieldHelper;
 use nystudio107\instantanalyticsGa4\models\Settings;
 use nystudio107\instantanalyticsGa4\services\ServicesTrait;
