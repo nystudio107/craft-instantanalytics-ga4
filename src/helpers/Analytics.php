@@ -13,6 +13,7 @@ namespace nystudio107\instantanalyticsGa4\helpers;
 
 use Craft;
 use craft\elements\User as UserElement;
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
@@ -266,23 +267,40 @@ class Analytics
     public static function getClientId(): string
     {
         $cid = '';
-        if (isset($_COOKIE['_ga'])) {
-            $parts = explode(".", $_COOKIE['_ga'], 4);
+        $cookieName = '_ga_' . StringHelper::removeLeft(InstantAnalytics::$settings->googleAnalyticsMeasurementId, 'G-');
+        if (isset($_COOKIE[$cookieName])) {
+            $parts = explode(".", $_COOKIE[$cookieName], 5);
             if ($parts !== false) {
-                $cid = implode('.', array_slice($parts, 2));
+                $cid = implode('.', array_slice($parts, 2, 2));
             }
         } elseif (isset($_COOKIE['_ia']) && $_COOKIE['_ia'] !== '') {
             $cid = $_COOKIE['_ia'];
         } else {
             // Generate our own client id, otherwise.
-            $cid = static::gaGenUUID();
+            $cid = static::gaGenUUID() . '.1';
         }
 
         if (InstantAnalytics::$settings->createGclidCookie && !empty($cid)) {
-            setcookie('_ia', $cid, strtotime('+2 years'), '/'); // Two years
+            setcookie('_ia', $cid, strtotime('+' . InstantAnalytics::$settings->sessionDuration . ' minutes'), '/'); // Two years
         }
 
         return $cid;
+    }
+
+    /**
+     * Get the user id.
+     *
+     * @return string
+     */
+    public static function getUserId(): string
+    {
+        $userId = Craft::$app->getUser()->getId();
+
+        if (!$userId) {
+            return '';
+        }
+
+        return $userId;
     }
 
     /**
