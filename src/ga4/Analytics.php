@@ -16,6 +16,7 @@ use Br33f\Ga4\MeasurementProtocol\Dto\Request\BaseRequest;
 use Br33f\Ga4\MeasurementProtocol\Dto\Response\BaseResponse;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
+use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
@@ -91,6 +92,14 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
+        $clientId = $this->request()->getClientId();
+
+        if (strpos($clientId, '.') !== false) {
+            [$sessionId, $sessionNumber] = explode('.', $clientId);
+            $event->setSessionId($sessionId);
+            $event->setSessionNumber($sessionNumber);
+        }
+
         return $this->request()->addEvent($event);
     }
 
@@ -175,26 +184,35 @@ class Analytics
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
      * @throws \yii\base\InvalidConfigException
      */
-    public function addCommerceProductImpression(Product|Variant $productVariant, $index, string $listName = 'default') {
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+    public function addCommerceProductImpression(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
+    }
+
+    /**
+     * Begin checkout.
+     *
+     * @param Order $cart
+     */
+    public function beginCheckout(Order $cart) {
+        InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
     /**
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
-     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      * @throws \yii\base\InvalidConfigException
+     *@deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      */
-    public function addCommerceProductDetailView(Product|Variant $productVariant, $index, string $listName = 'default') {
+    public function addCommerceProductDetailView(Product|Variant $productVariant, int $index = 0, string $listName = 'default') {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+        $this->addCommerceProductImpression($productVariant);
     }
 
     /**
@@ -279,8 +297,18 @@ class Analytics
     {
         if ($this->_request === null) {
             $this->_request = new BaseRequest();
+
             $this->_request->setClientId(AnalyticsHelper::getClientId());
+
+            if (InstantAnalytics::$settings->sendUserId) {
+                $userId = AnalyticsHelper::getUserId();
+
+                if ($userId) {
+                    $this->request()->setUserId($userId);
+                }
+            }
         }
+
 
         return $this->_request;
     }
