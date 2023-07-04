@@ -1,6 +1,6 @@
 # Instant Analytics GA4 Changelog
 
-## 4.0.0-beta.3 - UNRELEASED
+## 4.0.0-beta.3 - 2023.07.04
 ## Added
 * Added the `sessionDuration` setting that can be changed via config.php.
 * Added the `instantanalytics.beginCheckout(cart)` action.
