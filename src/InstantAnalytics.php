@@ -25,6 +25,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Exception;
+use nystudio107\instantanalyticsGa4\helpers\Analytics;
 use nystudio107\instantanalyticsGa4\helpers\Field as FieldHelper;
 use nystudio107\instantanalyticsGa4\models\Settings;
 use nystudio107\instantanalyticsGa4\services\ServicesTrait;
@@ -34,8 +35,6 @@ use nystudio107\seomatic\Seomatic;
 use yii\base\Event;
 use yii\web\Response;
 use function array_merge;
-
-/** @noinspection MissingPropertyAnnotationsInspection */
 
 /**
  * @author    nystudio107
@@ -125,10 +124,6 @@ class InstantAnalytics extends Plugin
         self::$plugin = $this;
         self::$settings = $this->getSettings();
 
-        // Determine if Craft Commerce is installed & enabled
-        self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
-        // Determine if SEOmatic is installed & enabled
-        self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -184,13 +179,43 @@ class InstantAnalytics extends Plugin
 
     /**
      * Handle the `{% hook iaSendPageView %}`
-     *
-     *
      */
-    public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context): string
+    public function iaSendPageView(/** @noinspection PhpUnusedParameterInspection */ array &$context = []): string
     {
         $this->ga4->addPageViewEvent();
         return '';
+    }
+
+    /**
+     * Handle the `{% hook iaInsertGtag %}`
+     */
+    public function iaInsertGtag(/** @noinspection PhpUnusedParameterInspection */ array &$context = []): string
+    {
+        $userSegment = '';
+
+        if (self::$settings->sendUserId) {
+            $userId = Analytics::getUserId();
+            if (!empty($userId)) {
+                $userSegment = "'user_id': '$userId'";
+            }
+        }
+
+        $measurementId = Craft::parseEnv(self::$settings->googleAnalyticsMeasurementId);
+
+        return <<<GTAG
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=$measurementId"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '$measurementId', 
+  {
+  $userSegment
+  });
+</script>
+GTAG;
     }
 
     public function logAnalyticsEvent(string $message, array $variables = [], string $category = ''): void
@@ -212,9 +237,9 @@ class InstantAnalytics extends Plugin
         // Add in our Twig extensions
         $view->registerTwigExtension(new InstantAnalyticsTwigExtension());
 
-        $ga4 = $this->ga4;
-        // Install our template hook
-        $view->hook('iaSendPageView', function (array $context) use ($ga4) { return (string) $ga4->addPageViewEvent(); });
+        // Install our template hooks
+        $view->hook('iaSendPageView', [$this, 'iaSendPageView']);
+        $view->hook('iaInsertGtag', [$this, 'iaInsertGtag']);
 
         // Register our variables
         Event::on(
@@ -249,16 +274,30 @@ class InstantAnalytics extends Plugin
                 }
             }
         );
-        $request = Craft::$app->getRequest();
-        // Install only for non-console site requests
-        if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
-            $this->installSiteEventListeners();
-        }
 
-        // Install only for non-console Control Panel requests
-        if ($request->getIsCpRequest() && !$request->getIsConsoleRequest()) {
-            $this->installCpEventListeners();
-        }
+        // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_LOAD_PLUGINS,
+            function (Event $event): void {
+                // Determine if Craft Commerce is installed & enabled
+                self::$commercePlugin = Craft::$app->getPlugins()->getPlugin(self::COMMERCE_PLUGIN_HANDLE);
+                // Determine if SEOmatic is installed & enabled
+                self::$seomaticPlugin = Craft::$app->getPlugins()->getPlugin(self::SEOMATIC_PLUGIN_HANDLE);
+
+                // Make sure to install these only after we definitely know whether other plugins are installed
+                $request = Craft::$app->getRequest();
+                // Install only for non-console site requests
+                if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
+                    $this->installSiteEventListeners();
+                }
+
+                // Install only for non-console Control Panel requests
+                if ($request->getIsCpRequest() && !$request->getIsConsoleRequest()) {
+                    $this->installCpEventListeners();
+                }
+            }
+        );
     }
 
     /**

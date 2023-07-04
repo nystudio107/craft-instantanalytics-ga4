@@ -13,7 +13,6 @@ namespace nystudio107\instantanalyticsGa4\services;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\ItemBaseEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Event\PurchaseEvent;
 use Br33f\Ga4\MeasurementProtocol\Dto\Parameter\ItemParameter;
-use Craft;
 use craft\base\Component;
 use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
@@ -55,6 +54,36 @@ class Commerce extends Component
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding `Commerce - Order Complete event`: `{reference}` => `{price}`',
                 ['reference' => $order->reference, 'price' => $order->totalPrice],
+                __METHOD__
+            );
+        }
+    }
+
+    /**
+     * Enqueue analytics information for a new checkout flow
+     *
+     * @param ?Order $order
+     */
+    public function triggerBeginCheckoutEvent(Order $order = null)
+    {
+        if ($order) {
+            $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->BeginCheckoutEvent();
+            // First, include the transaction data
+            $event->setCurrency($order->getPaymentCurrency())
+                ->setValue($order->getTotalPrice());
+
+            // Add each line item in the cart
+            $index = 1;
+            foreach ($order->lineItems as $lineItem) {
+                $this->addProductDataFromLineItem($event, $lineItem, $index);
+                $index++;
+            }
+
+            InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
+
+            InstantAnalytics::$plugin->logAnalyticsEvent(
+                'Adding `Commerce - Begin Checkout event``',
+                [],
                 __METHOD__
             );
         }
@@ -210,15 +239,13 @@ class Commerce extends Component
      * Add a product impression from a Craft Commerce Product or Variant
      *
      * @param Product|Variant $productVariant the Product or Variant
-     * @param int $index
-     * @param string $listName
      * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default'): void
+    public function addCommerceProductImpression($productVariant): void
     {
         if ($productVariant) {
             $event = InstantAnalytics::$plugin->ga4->getAnalytics()->create()->ViewItemEvent();
-            $this->addProductDataFromProductOrVariant($event, $productVariant, $index, $listName);
+            $this->addProductDataFromProductOrVariant($event, $productVariant);
 
             InstantAnalytics::$plugin->ga4->getAnalytics()->addEvent($event);
 
@@ -226,7 +253,7 @@ class Commerce extends Component
             $name = $productVariant instanceof Product ? $productVariant->getName() : $productVariant->getProduct()->getName();
             InstantAnalytics::$plugin->logAnalyticsEvent(
                 'Adding view item event for `{sku}` - `{name}` - `{name}` - `{index}`',
-                ['sku' => $sku, 'name' => $name, 'index' => $index],
+                ['sku' => $sku, 'name' => $name],
                 __METHOD__
             );
         }
@@ -259,12 +286,16 @@ class Commerce extends Component
     /**
      * Extract product data from a Craft Commerce Product or Variant
      *
-     * @param Product|Variant $productVariant the Product or Variant
+     * @param Product|Variant|null $productVariant the Product or Variant
      *
      * @throws InvalidConfigException
      */
-    protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = 0, $listName = 'default'): void
+    protected function addProductDataFromProductOrVariant(ItemBaseEvent $event, $productVariant = null, $index = null, $listName = ''): void
     {
+        if ($productVariant === null) {
+            return;
+        }
+
         $eventItem = $this->getNewItemParameter();
 
         $isVariant = $productVariant instanceof Variant;
@@ -315,8 +346,13 @@ class Commerce extends Component
             }
         }
 
-        $eventItem->setIndex($index);
-        $eventItem->setItemListName($listName);
+        if ($index !== null) {
+            $eventItem->setIndex($index);
+        }
+
+        if (!empty($listName)) {
+            $eventItem->setItemListName($listName);
+        }
 
         // Add item info to the event
         $event->addItem($eventItem);

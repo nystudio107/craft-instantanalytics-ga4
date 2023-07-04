@@ -18,10 +18,10 @@ use Br33f\Ga4\MeasurementProtocol\Exception\HydrationException;
 use Br33f\Ga4\MeasurementProtocol\Exception\ValidationException;
 use Br33f\Ga4\MeasurementProtocol\HttpClient;
 use Craft;
+use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
-use craft\helpers\App;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
@@ -94,6 +94,14 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
+        $clientId = $this->request()->getClientId();
+
+        if (strpos($clientId, '.') !== false) {
+            [$sessionId, $sessionNumber] = explode('.', $clientId);
+            $event->setSessionId($sessionId);
+            $event->setSessionNumber($sessionNumber);
+        }
+
         return $this->request()->addEvent($event);
     }
 
@@ -178,26 +186,35 @@ class Analytics
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
      * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression($productVariant, $index, string $listName = 'default') {
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+    public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default') {
+        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
+    }
+
+    /**
+     * Begin checkout.
+     *
+     * @param Order $cart
+     */
+    public function beginCheckout(Order $cart) {
+        InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
     /**
      * Add a commerce item list impression.
      *
      * @param Product|Variant $productVariant
-     * @param $index
+     * @param int $index
      * @param string $listName
      * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      * @throws InvalidConfigException
      */
-    public function addCommerceProductDetailView($productVariant, $index, string $listName = 'default') {
+    public function addCommerceProductDetailView($productVariant, int $index = 0, string $listName = 'default') {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
-        InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant, $index, $listName);
+        $this->addCommerceProductImpression($productVariant);
     }
 
     /**
@@ -293,8 +310,18 @@ class Analytics
     {
         if ($this->_request === null) {
             $this->_request = new BaseRequest();
+
             $this->_request->setClientId(AnalyticsHelper::getClientId());
+
+            if (InstantAnalytics::$settings->sendUserId) {
+                $userId = AnalyticsHelper::getUserId();
+
+                if ($userId) {
+                    $this->request()->setUserId($userId);
+                }
+            }
         }
+
 
         return $this->_request;
     }
@@ -312,8 +339,8 @@ class Analytics
     {
         if ($this->_service === null) {
             $settings = InstantAnalytics::$settings;
-            $apiSecret = App::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
-            $measurementId = App::parseEnv($settings->googleAnalyticsMeasurementId);
+            $apiSecret = Craft::parseEnv($settings->googleAnalyticsMeasurementApiSecret);
+            $measurementId = Craft::parseEnv($settings->googleAnalyticsMeasurementId);
 
             if (empty($apiSecret) || empty($measurementId)) {
                 InstantAnalytics::$plugin->logAnalyticsEvent(
