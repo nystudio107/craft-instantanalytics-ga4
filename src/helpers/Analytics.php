@@ -15,6 +15,7 @@ use Craft;
 use craft\elements\User as UserElement;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use craft\helpers\App;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
@@ -267,11 +268,10 @@ class Analytics
     public static function getClientId(): string
     {
         $cid = '';
-        $cookieName = '_ga_' . StringHelper::removeLeft(InstantAnalytics::$settings->googleAnalyticsMeasurementId, 'G-');
-        if (isset($_COOKIE[$cookieName])) {
-            $parts = explode(".", $_COOKIE[$cookieName], 5);
+        if (isset($_COOKIE['_ga'])) {
+            $parts = explode(".", $_COOKIE['_ga'], 4);
             if ($parts !== false) {
-                $cid = implode('.', array_slice($parts, 2, 2));
+                $cid = implode('.', array_slice($parts, 2));
             }
         } elseif (isset($_COOKIE['_ia']) && $_COOKIE['_ia'] !== '') {
             $cid = $_COOKIE['_ia'];
@@ -285,6 +285,33 @@ class Analytics
         }
 
         return $cid;
+    }
+
+    /**
+     * getSessionCookie handles the parsing of the _ga_*MEASUREMENT ID* cookie
+     * unique identifier of session ID & number
+     *
+     * @return null|array $sessionCookie
+     */
+    public static function getSessionCookie(): ?array
+    {
+        $measurementId = App::parseEnv(InstantAnalytics::$settings->googleAnalyticsMeasurementId);
+        $cookieName = '_ga_' . StringHelper::removeLeft($measurementId, 'G-');
+        if (isset($_COOKIE[$cookieName])) {
+            $sessionCookie = null;
+
+            $parts = explode(".", $_COOKIE[$cookieName], 5);
+            if ($parts && count($parts) > 1) {
+                $sessionCookie = implode('.', array_slice($parts, 2, 2));
+            }
+
+            if (str_contains($sessionCookie, '.')) {
+                [$sessionId, $sessionNumber] = explode('.', $sessionCookie);
+                return ['sessionId' => $sessionId, 'sessionNumber' => $sessionNumber];
+            }
+        }
+
+        return null;
     }
 
     /**

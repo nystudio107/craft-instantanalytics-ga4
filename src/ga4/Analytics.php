@@ -92,12 +92,9 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
-        $clientId = $this->request()->getClientId();
-
-        if (strpos($clientId, '.') !== false) {
-            [$sessionId, $sessionNumber] = explode('.', $clientId);
-            $event->setSessionId($sessionId);
-            $event->setSessionNumber($sessionNumber);
+        if ($sessionCookie = AnalyticsHelper::getSessionCookie()) {
+            $event->setSessionId($sessionCookie['sessionId']);
+            $event->setSessionNumber($sessionCookie['sessionNumber']);
         }
 
         return $this->request()->addEvent($event);
