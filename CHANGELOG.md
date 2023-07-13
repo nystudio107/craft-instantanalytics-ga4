@@ -1,5 +1,9 @@
 # Instant Analytics GA4 Changelog
 
+## 3.0.0-beta.3 - UNRELEASED
+### Fixed
+* Fixed an error where Google client id and GA session id would get mixed up.
+
 ## 3.0.0-beta.2 - 2023.07.04
 ## Added
 * Added the `sessionDuration` setting that can be changed via config.php.

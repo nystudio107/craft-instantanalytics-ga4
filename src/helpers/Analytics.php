@@ -13,6 +13,7 @@ namespace nystudio107\instantanalyticsGa4\helpers;
 
 use Craft;
 use craft\elements\User as UserElement;
+use craft\helpers\App;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
@@ -267,11 +268,10 @@ class Analytics
     public static function getClientId(): string
     {
         $cid = '';
-        $cookieName = '_ga_' . StringHelper::removeLeft(InstantAnalytics::$settings->googleAnalyticsMeasurementId, 'G-');
-        if (isset($_COOKIE[$cookieName])) {
-            $parts = explode(".", $_COOKIE[$cookieName], 5);
+        if (isset($_COOKIE['_ga'])) {
+            $parts = explode(".", $_COOKIE['_ga'], 4);
             if ($parts !== false) {
-                $cid = implode('.', array_slice($parts, 2, 2));
+                $cid = implode('.', array_slice($parts, 2));
             }
         } elseif (isset($_COOKIE['_ia']) && $_COOKIE['_ia'] !== '') {
             $cid = $_COOKIE['_ia'];
@@ -281,10 +281,31 @@ class Analytics
         }
 
         if (InstantAnalytics::$settings->createGclidCookie && !empty($cid)) {
-            setcookie('_ia', $cid, strtotime('+' . InstantAnalytics::$settings->sessionDuration . ' minutes'), '/'); // Two years
+            setcookie('_ia', $cid, strtotime('+2 years'), '/'); // Two years
         }
 
         return $cid;
+    }
+
+    /**
+     * Get the Google Analytics session string from the cookie.
+     *
+     * @return string
+     */
+    public static function getSessionString(): string
+    {
+        $sessionString = '';
+        $measurementId = App::parseEnv(InstantAnalytics::$settings->googleAnalyticsMeasurementId);
+        $cookieName = '_ga_' . StringHelper::removeLeft($measurementId, 'G-');
+
+        if (isset($_COOKIE[$cookieName])) {
+            $parts = explode(".", $_COOKIE[$cookieName], 5);
+            if ($parts !== false) {
+                $sessionString = implode('.', array_slice($parts, 2, 2));
+            }
+        }
+
+        return $sessionString;
     }
 
     /**
