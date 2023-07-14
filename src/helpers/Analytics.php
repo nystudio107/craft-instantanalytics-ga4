@@ -295,7 +295,7 @@ class Analytics
     public static function getSessionString(): string
     {
         $sessionString = '';
-        $measurementId = App::parseEnv(InstantAnalytics::$settings->googleAnalyticsMeasurementId);
+        $measurementId = Craft::parseEnv(InstantAnalytics::$settings->googleAnalyticsMeasurementId);
         $cookieName = '_ga_' . StringHelper::removeLeft($measurementId, 'G-');
 
         if (isset($_COOKIE[$cookieName])) {

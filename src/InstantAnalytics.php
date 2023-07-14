@@ -202,7 +202,6 @@ class InstantAnalytics extends Plugin
 
         $measurementId = Craft::parseEnv(self::$settings->googleAnalyticsMeasurementId);
 
-
         $view = Craft::$app->getView();
         $existingMode = $view->getTemplateMode();
         $view->setTemplateMode(View::TEMPLATE_MODE_CP);
