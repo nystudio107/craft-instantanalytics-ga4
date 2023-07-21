@@ -194,31 +194,25 @@ class InstantAnalytics extends Plugin
      */
     public function iaInsertGtag(/** @noinspection PhpUnusedParameterInspection */ array &$context = []): string
     {
-        $userSegment = '';
+        $config = [];
 
         if (self::$settings->sendUserId) {
             $userId = Analytics::getUserId();
             if (!empty($userId)) {
-                $userSegment = "'user_id': '$userId'";
+                $config['user_id'] = $userId;
             }
         }
 
         $measurementId = App::parseEnv(self::$settings->googleAnalyticsMeasurementId);
 
-        return <<<GTAG
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=$measurementId"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', '$measurementId', 
-  {
-  $userSegment
-  });
-</script>
-GTAG;
+        $view = Craft::$app->getView();
+        $existingMode = $view->getTemplateMode();
+        $view->setTemplateMode(View::TEMPLATE_MODE_CP);
+        $content = $view->renderTemplate('instant-analytics-ga4/_includes/gtag', compact('measurementId', 'config'));
+        $view->setTemplateMode($existingMode);
+
+        return $content;
     }
 
     public function logAnalyticsEvent(string $message, array $variables = [], string $category = ''): void

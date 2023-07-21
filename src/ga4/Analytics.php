@@ -74,6 +74,8 @@ class Analytics
 
     private ?bool $_shouldSendAnalytics = null;
 
+    private ?string $_sessionString = null;
+
     /**
      * Component factory for creating events.
      *
@@ -92,10 +94,12 @@ class Analytics
      */
     public function addEvent(AbstractEvent $event): BaseRequest
     {
-        $clientId = $this->request()->getClientId();
+        if ($this->_sessionString === null) {
+            $this->_sessionString = AnalyticsHelper::getSessionString();
+        }
 
-        if (strpos($clientId, '.') !== false) {
-            [$sessionId, $sessionNumber] = explode('.', $clientId);
+        if (str_contains($this->_sessionString, '.')) {
+            [$sessionId, $sessionNumber] = explode('.', $this->_sessionString);
             $event->setSessionId($sessionId);
             $event->setSessionNumber($sessionNumber);
         }
