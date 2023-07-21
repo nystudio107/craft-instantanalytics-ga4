@@ -1,6 +1,6 @@
 # Instant Analytics GA4 Changelog
 
-## 3.0.0-beta.3 - UNRELEASED
+## 3.0.0-beta.3 - 2023.07.21
 ### Fixed
 * Fixed an error where Google client id and GA session id would get mixed up.
 
