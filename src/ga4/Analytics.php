@@ -263,6 +263,7 @@ class Analytics
             throw new InvalidConfigException('instant-analytics-ga4', 'Unable to create GA4 service object');
         }
 
+        $service->setApiSecret($apiSecret);
         return $this;
     }
 
