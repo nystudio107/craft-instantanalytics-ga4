@@ -4,7 +4,7 @@
 ### Added
 * Add currency to all Commerce GA4 events. ([#20](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/20))
 
-###Fixed
+### Fixed
 * Fixed a bug where it was impossible to set API Secret programmatically. ([#16](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/16))
 
 ## 3.0.0-beta.3 - 2023.07.21
