@@ -18,6 +18,7 @@ use craft\commerce\elements\Order;
 use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\commerce\models\LineItem;
+use craft\commerce\Plugin as CommercePlugin;
 use craft\elements\db\CategoryQuery;
 use craft\elements\db\EntryQuery;
 use craft\elements\db\MatrixBlockQuery;
@@ -176,6 +177,7 @@ class Commerce extends Component
         $eventItem->setItemId($purchasable->getSku() ?? $lineItem->getSku());
         $eventItem->setPrice($lineItem->salePrice);
         $eventItem->setQuantity($lineItem->qty);
+        $eventItem->setCurrency(CommercePlugin::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso());
 
         // Handle this purchasable being a Variant
         if (is_a($purchasable, Variant::class)) {
