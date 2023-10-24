@@ -1,6 +1,6 @@
 # Instant Analytics GA4 Changelog
 
-## 4.0.0-beta.5 - UNRELEASED
+## 4.0.0-beta.5 - 2023.10.23
 ## Added
 * Add currency to all Commerce GA4 events. ([#20](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/20))
 
