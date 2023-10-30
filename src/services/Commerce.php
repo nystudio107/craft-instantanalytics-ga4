@@ -179,7 +179,6 @@ class Commerce extends Component
         $eventItem->setItemId($purchasable->getSku() ?? $lineItem->getSku());
         $eventItem->setPrice($lineItem->salePrice);
         $eventItem->setQuantity($lineItem->qty);
-        $eventItem->setCurrency(CommercePlugin::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso());
 
         // Handle this purchasable being a Variant
         if (is_a($purchasable, Variant::class)) {
@@ -443,6 +442,8 @@ class Commerce extends Component
     {
         $parameter = new ItemParameter();
         $parameter->setAffiliation(InstantAnalytics::$plugin->ga4->getAnalytics()->getAffiliation());
+        $parameter->setCurrency(CommercePlugin::getInstance()->getPaymentCurrencies()->getPrimaryPaymentCurrencyIso());
+
         return $parameter;
     }
 }
