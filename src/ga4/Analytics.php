@@ -21,7 +21,6 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
-use iio\libmergepdf\Exception;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
