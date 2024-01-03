@@ -21,6 +21,7 @@ use craft\commerce\elements\Product;
 use craft\commerce\elements\Variant;
 use craft\errors\MissingComponentException;
 use craft\helpers\App;
+use iio\libmergepdf\Exception;
 use nystudio107\instantanalyticsGa4\helpers\Analytics as AnalyticsHelper;
 use nystudio107\instantanalyticsGa4\InstantAnalytics;
 use nystudio107\seomatic\Seomatic;
@@ -76,6 +77,8 @@ class Analytics
 
     private ?string $_sessionString = null;
 
+    private array $eventList = [];
+
     /**
      * Component factory for creating events.
      *
@@ -92,7 +95,7 @@ class Analytics
      * @param AbstractEvent $event
      * @return BaseRequest
      */
-    public function addEvent(AbstractEvent $event): BaseRequest
+    public function addEvent(AbstractEvent $event): void
     {
         if ($this->_sessionString === null) {
             $this->_sessionString = AnalyticsHelper::getSessionString();
@@ -104,7 +107,7 @@ class Analytics
             $event->setSessionNumber($sessionNumber);
         }
 
-        return $this->request()->addEvent($event);
+        $this->eventList[] = $event;
     }
 
     /**
@@ -114,8 +117,9 @@ class Analytics
      * @throws \Br33f\Ga4\MeasurementProtocol\Exception\HydrationException
      * @throws \Br33f\Ga4\MeasurementProtocol\Exception\ValidationException
      */
-    public function sendCollectedEvents(): ?BaseResponse
+    public function sendCollectedEvents(): ?array
     {
+
         if ($this->_shouldSendAnalytics === null) {
             $this->_shouldSendAnalytics = AnalyticsHelper::shouldSendAnalytics();
         }
@@ -131,7 +135,7 @@ class Analytics
         }
 
         $request = $this->request();
-        $eventCount = count($request->getEvents()->getEventList());
+        $eventCount = count($this->eventList);
 
         if (!InstantAnalytics::$settings->sendAnalyticsData) {
             InstantAnalytics::$plugin->logAnalyticsEvent(
@@ -159,12 +163,22 @@ class Analytics
             __METHOD__
         );
 
-        $response = $service->send($request);
+        // Batch into groups of 25
+        $responses = [];
 
-        // Clear events already sent from the list.
-        $request->getEvents()->setEventList([]);
+        foreach (array_chunk($this->eventList, 25) as $chunk) {
+            $request->getEvents()->setEventList([]);
 
-        return $response;
+            /** @var AbstractEvent $event */
+            foreach ($chunk as $event) {
+                $request->addEvent($event);
+            }
+
+            $responses[] = $service->send($request);
+        }
+
+
+        return $responses;
     }
 
     /**
