@@ -2,7 +2,7 @@
   "name": "nystudio107/craft-instantanalytics-ga4",
   "description": "Instant Analytics brings full Google GA4 server-side analytics support to your Twig templates and automatic Craft Commerce integration",
   "type": "craft-plugin",
-  "version": "4.0.0-beta.4",
+  "version": "4.0.0",
   "keywords": [
     "craft",
     "cms",
