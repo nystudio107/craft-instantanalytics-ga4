@@ -225,7 +225,7 @@ class Analytics
      * @param array $products
      * @param $listName
      */
-    public function addCommerceProductListImpression(array $products, $listName) {
+    public function addCommerceProductListImpression(array $products, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 

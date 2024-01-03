@@ -1,5 +1,9 @@
 # Instant Analytics GA4 Changelog
 
+## 4.0.1 - UNRELEASED
+### Fixed
+* Fixed an error where it was impossible to add a Commerce Product list impression without providing a list name. ([#25](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/25))
+
 ## 4.0.0 - 2023.10.31
 ### Fixed
 * Add currency to all Commerce GA4 events, but better. ([#20](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/20))
