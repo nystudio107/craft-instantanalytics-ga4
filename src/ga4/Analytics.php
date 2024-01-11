@@ -78,6 +78,8 @@ class Analytics
 
     private $_sessionString = null;
 
+    private array $eventList = [];
+
     /**
      * Component factory for creating events.
      *
@@ -92,9 +94,9 @@ class Analytics
      * Add an event to be sent to Google
      *
      * @param AbstractEvent $event
-     * @return BaseRequest
+     * @return void
      */
-    public function addEvent(AbstractEvent $event): BaseRequest
+    public function addEvent(AbstractEvent $event): void
     {
         if ($this->_sessionString === null) {
             $this->_sessionString = AnalyticsHelper::getSessionString();
@@ -106,7 +108,7 @@ class Analytics
             $event->setSessionNumber($sessionNumber);
         }
 
-        return $this->request()->addEvent($event);
+        $this->eventList[] = $event;
     }
 
     /**
@@ -116,7 +118,7 @@ class Analytics
      * @throws HydrationException
      * @throws ValidationException
      */
-    public function sendCollectedEvents(): ?BaseResponse
+    public function sendCollectedEvents(): ?array
     {
         if ($this->_shouldSendAnalytics === null) {
             $this->_shouldSendAnalytics = AnalyticsHelper::shouldSendAnalytics();
@@ -133,7 +135,7 @@ class Analytics
         }
 
         $request = $this->request();
-        $eventCount = count($request->getEvents()->getEventList());
+        $eventCount = count($this->eventList);
 
         if (!InstantAnalytics::$settings->sendAnalyticsData) {
             InstantAnalytics::$plugin->logAnalyticsEvent(
@@ -161,12 +163,21 @@ class Analytics
             __METHOD__
         );
 
-        $response = $service->send($request);
+        // Batch into groups of 25
+        $responses = [];
 
-        // Clear events already sent from the list.
-        $request->getEvents()->setEventList([]);
+        foreach (array_chunk($this->eventList, 25) as $chunk) {
+            $request->getEvents()->setEventList([]);
 
-        return $response;
+            /** @var AbstractEvent $event */
+            foreach ($chunk as $event) {
+                $request->addEvent($event);
+            }
+
+            $responses[] = $service->send($request);
+        }
+
+        return $responses;
     }
 
     /**
@@ -227,7 +238,7 @@ class Analytics
      * @param array $products
      * @param $listName
      */
-    public function addCommerceProductListImpression(array $products, $listName) {
+    public function addCommerceProductListImpression(array $products, string $listName = 'default') {
         InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 
