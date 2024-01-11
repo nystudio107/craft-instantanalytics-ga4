@@ -1,6 +1,6 @@
 # Instant Analytics GA4 Changelog
 
-## 3.0.1 - UNRELEASED
+## 3.0.1 - 2024.01.11
 ### Changed
 * Updated the buildchain to use Vite 5
 
