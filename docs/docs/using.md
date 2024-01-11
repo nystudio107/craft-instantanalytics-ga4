@@ -112,7 +112,7 @@ This just creates the event object. You then will want to add or modify various 
 ...and then add the event to Instant Analytics so it will be sent via `isPageViewSend`:
 
 ```twig
-    {% do instantAnalytics.viewItemEvent(searchEvent) %}
+    {% do instantAnalytics.viewItemEvent(viewItemEvent) %}
 ```
 
 Here’s the analogous code in PHP:
