@@ -31,7 +31,7 @@ trait ServicesTrait
     {
         // Constants aren't allowed in traits until PHP >= 8.2
         // so we can't extract it from the passed in $config
-        $majorVersion = '1';
+        $majorVersion = '3';
         // Dev server container name & port are based on the major version of this plugin
         $devPort = 3000 + (int)$majorVersion;
         $versionName = 'v' . $majorVersion;
@@ -46,7 +46,7 @@ trait ServicesTrait
                     'assetClass' => InstantAnalyticsAsset::class,
                     'checkDevServer' => true,
                     'class' => VitePluginService::class,
-                    'devServerInternal' => 'http://craft-instantanalytics-' . $versionName . '-buildchain-dev:' . $devPort,
+                    'devServerInternal' => 'http://craft-instantanalytics-ga4-' . $versionName . '-buildchain-dev:' . $devPort,
                     'devServerPublic' => 'http://localhost:' . $devPort,
                     'errorEntry' => 'src/js/app.ts',
                     'useDevServer' => true,
