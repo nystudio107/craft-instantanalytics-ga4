@@ -173,8 +173,13 @@ class Commerce extends Component
         $product = null;
         $purchasable = $lineItem->purchasable;
 
-        $eventItem->setItemName($purchasable->title ?? $lineItem->getDescription());
-        $eventItem->setItemId($purchasable->getSku() ?? $lineItem->getSku());
+        if ($purchasable === null) {
+            $eventItem->setItemName($lineItem->getDescription());
+            $eventItem->setItemId($lineItem->getSku());
+        } else {
+            $eventItem->setItemName($purchasable->title ?? $lineItem->getDescription());
+            $eventItem->setItemId($purchasable->getSku() ?? $lineItem->getSku());
+        }
         $eventItem->setPrice($lineItem->salePrice);
         $eventItem->setQuantity($lineItem->qty);
 
