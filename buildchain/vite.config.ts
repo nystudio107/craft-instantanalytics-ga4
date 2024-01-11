@@ -19,10 +19,8 @@ export default defineConfig(({command}) => ({
         app: 'src/js/app.ts',
         welcome: 'src/js/welcome.ts',
       },
-      output: {
-        sourcemap: true
-      },
-    }
+    },
+    sourcemap: true
   },
   plugins: [
     viteRestartPlugin({
