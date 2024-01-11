@@ -1,6 +1,9 @@
 # Instant Analytics GA4 Changelog
 
 ## 3.0.1 - UNRELEASED
+### Changed
+* Updated the buildchain to use Vite 5
+
 ### Fixed
 * Fixed an error where it was impossible to add a Commerce Product list impression without providing a list name. ([#25](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/25))
 * Fixed an error where it was impossible to send more than 25 GA4 events. ([#24](https://github.com/nystudio107/craft-instantanalytics-ga4/issues/24))
