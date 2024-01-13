@@ -1,5 +1,9 @@
 # Instant Analytics GA4 Changelog
 
+## 3.0.2 - UNRELEASED
+### Changed
+* Updated docs to use node 20 & a new sitemap plugin
+
 ## 3.0.1 - 2024.01.11
 ### Changed
 * Updated the buildchain to use Vite 5
