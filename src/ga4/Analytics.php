@@ -78,7 +78,7 @@ class Analytics
 
     private $_sessionString = null;
 
-    private array $eventList = [];
+    private $eventList = [];
 
     /**
      * Component factory for creating events.
@@ -180,6 +180,11 @@ class Analytics
         return $responses;
     }
 
+    public function getAffiliation(): ?string
+    {
+        return $this->_affiliation;
+    }
+
     /**
      * Set affiliation for all the events that incorporate Commerce Product info for the remaining duration of request.
      *
@@ -192,11 +197,6 @@ class Analytics
         return $this;
     }
 
-    public function getAffiliation(): ?string
-    {
-        return $this->_affiliation;
-    }
-
     /**
      * Add a commerce item list impression.
      *
@@ -205,7 +205,8 @@ class Analytics
      * @param string $listName
      * @throws InvalidConfigException
      */
-    public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default') {
+    public function addCommerceProductImpression($productVariant, int $index = 0, string $listName = 'default')
+    {
         InstantAnalytics::$plugin->commerce->addCommerceProductImpression($productVariant);
     }
 
@@ -214,7 +215,8 @@ class Analytics
      *
      * @param Order $cart
      */
-    public function beginCheckout(Order $cart) {
+    public function beginCheckout(Order $cart)
+    {
         InstantAnalytics::$plugin->commerce->triggerBeginCheckoutEvent($cart);
     }
 
@@ -224,10 +226,11 @@ class Analytics
      * @param Product|Variant $productVariant
      * @param int $index
      * @param string $listName
-     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      * @throws InvalidConfigException
+     * @deprecated `Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.
      */
-    public function addCommerceProductDetailView($productVariant, int $index = 0, string $listName = 'default') {
+    public function addCommerceProductDetailView($productVariant, int $index = 0, string $listName = 'default')
+    {
         Craft::$app->getDeprecator()->log('Analytics::addCommerceProductDetailView()', '`Analytics::addCommerceProductDetailView()` is deprecated. Use `Analytics::addCommerceProductImpression()` instead.');
         $this->addCommerceProductImpression($productVariant);
     }
@@ -238,7 +241,8 @@ class Analytics
      * @param array $products
      * @param $listName
      */
-    public function addCommerceProductListImpression(array $products, string $listName = 'default') {
+    public function addCommerceProductListImpression(array $products, string $listName = 'default')
+    {
         InstantAnalytics::$plugin->commerce->addCommerceProductListImpression($products, $listName);
     }
 
@@ -322,6 +326,15 @@ class Analytics
         return null;
     }
 
+    /**
+     * Init the service used to send events
+     */
+    public function init(): void
+    {
+        $this->service();
+        $this->request();
+    }
+
     protected function request(): BaseRequest
     {
         if ($this->_request === null) {
@@ -340,15 +353,6 @@ class Analytics
 
 
         return $this->_request;
-    }
-
-    /**
-     * Init the service used to send events
-     */
-    public function init(): void
-    {
-        $this->service();
-        $this->request();
     }
 
     protected function service(): ?Service
