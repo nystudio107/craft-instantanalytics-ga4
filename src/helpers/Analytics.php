@@ -298,8 +298,27 @@ class Analytics
 
         if (isset($_COOKIE[$cookieName])) {
             $parts = explode(".", $_COOKIE[$cookieName], 5);
-            if ($parts !== false) {
-                $sessionString = implode('.', array_slice($parts, 2, 2));
+            if ($parts !== false && count($parts) >= 3) {
+                $version = $parts[0]; // GS1 or GS2
+
+                if ($version === 'GS2') {
+                    // GS2 format: GS2.1.s<session_id>$o<session_number>$g...$t...$j...$l...$h...
+                    $sessionId = null;
+                    $sessionNumber = null;
+                    foreach (explode('$', $parts[2]) as $field) {
+                        if (str_starts_with($field, 's')) {
+                            $sessionId = substr($field, 1);
+                        } elseif (str_starts_with($field, 'o')) {
+                            $sessionNumber = substr($field, 1);
+                        }
+                    }
+                    if ($sessionId !== null && $sessionNumber !== null) {
+                        $sessionString = $sessionId . '.' . $sessionNumber;
+                    }
+                } else {
+                    // GS1 format: GS1.1.<session_id>.<session_number>.<other_fields>
+                    $sessionString = implode('.', array_slice($parts, 2, 2));
+                }
             }
         }
 

@@ -104,8 +104,8 @@ class Analytics
 
         if (str_contains($this->_sessionString, '.')) {
             [$sessionId, $sessionNumber] = explode('.', $this->_sessionString);
-            $event->setParamValue('sessionId', $sessionId);
-            $event->setParamValue('sessionNumber', $sessionNumber);
+            $event->setParamValue('session_id', $sessionId);
+            $event->setParamValue('session_number', $sessionNumber);
         }
 
         $this->eventList[] = $event;
